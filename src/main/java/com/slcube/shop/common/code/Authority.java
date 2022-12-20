@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum RowStatus {
-    Y("Y"),
-    N("N");
+public enum Authority {
 
-    private String rowStatus;
+    ADMIN("ADMIN"),
+    USER("USER");
+
+    private String authority;
 }

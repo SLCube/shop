@@ -1,7 +1,7 @@
 package com.slcube.shop.business.domain;
 
 import com.slcube.shop.common.code.RowStatus;
-import com.slcube.shop.common.code.UserLevel;
+import com.slcube.shop.common.code.Authority;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,11 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class User {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "member_id")
     private Long id;
 
     @Column(nullable = false)
@@ -32,7 +33,7 @@ public class User {
     private String name;
     @Column(nullable = false)
     @Enumerated
-    private UserLevel userLevel;
+    private Authority authority;
 
     @Column(nullable = false)
     private int point;
@@ -49,6 +50,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RowStatus isSignOut = RowStatus.N;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<Address> addresses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Cart> carts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
 }

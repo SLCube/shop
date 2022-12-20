@@ -13,9 +13,14 @@ import java.util.List;
 @Getter
 public class Item {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "item_id")
     private Long id;
 
     @OneToMany(mappedBy = "item")
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item")
+    private List<ItemImage> itemImages = new ArrayList<>();
 }
