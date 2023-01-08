@@ -1,15 +1,13 @@
-package com.slcube.shop.business.dto.item;
+package com.slcube.shop.business.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ItemUpdateRequestDto {
+public class ItemResponseDto {
 
     private Long itemId;
-    private Long categoryId;
     private String itemName;
     private int price;
-    private int stockQuantity;
 }
