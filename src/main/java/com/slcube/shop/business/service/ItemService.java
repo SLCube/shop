@@ -1,6 +1,6 @@
 package com.slcube.shop.business.service;
 
-import com.slcube.shop.business.dto.ItemResponseDto;
+import com.slcube.shop.business.dto.item.ItemResponseDto;
 import com.slcube.shop.business.dto.item.ItemListResponseDto;
 import com.slcube.shop.business.dto.item.ItemSaveRequestDto;
 import com.slcube.shop.business.dto.item.ItemUpdateRequestDto;

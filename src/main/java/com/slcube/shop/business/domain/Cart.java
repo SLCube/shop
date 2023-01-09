@@ -9,19 +9,11 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Member {
+public class Cart extends BaseEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "member_id")
+    @Column(name = "cart_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private String username;
 }

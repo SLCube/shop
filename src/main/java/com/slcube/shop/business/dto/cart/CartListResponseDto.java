@@ -5,8 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CartSaveRequestDto {
+public class CartListResponseDto {
 
-    private Long itemId;
+    private Long cartItemId;
+    private String itemName;
+    private int price;
     private int quantity;
 }
