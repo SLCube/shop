@@ -12,5 +12,5 @@ public interface CartService {
     public Long saveCart(CartSaveRequestDto requestDto);
     public Page<CartListResponseDto> findCarts(int pageNo);
     public Long updateCart(CartUpdateRequestDto requestDto);
-    public Long deleteCart(Long id);
+    public Long deleteCart(Long CartId);
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public interface CategoryService {
 
     public Long saveCategory(CategorySaveRequestDto requestDto);
-    public Long deleteCategory(Long id);
+    public Long deleteCategory(Long categoryId);
     public Long updateCategory(CategoryUpdateRequestDto requestDto);
 
     public List<CategoryListResponseDto> findCategories();

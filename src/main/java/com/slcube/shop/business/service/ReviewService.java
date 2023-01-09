@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ReviewService {
 
-    public Long registerReview(ReviewSaveRequestDto requestDto);
-    public Long deleteReview(Long id);
-    public Long recommendReview(Long id);
-    public Page<ReviewListResponseDto> getReviews(Long itemId, int pageNo);
+    public Long saveReview(ReviewSaveRequestDto requestDto);
+    public Long deleteReview(Long reviewId);
+    public Long recommendReview(Long reviewId);
+    public Page<ReviewListResponseDto> findReviews(Long itemId, int pageNo);
     public Long ReportReview(ReviewReportRequestDto requestDto);
-    public Page<ReportedReviewListResponseDto> getReportedReviews(int pageNo);
+    public Page<ReportedReviewListResponseDto> findReportedReview(int pageNo);
 }
