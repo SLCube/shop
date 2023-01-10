@@ -12,12 +12,4 @@ public class ItemSaveRequestDto {
     private String itemName;
     private int price;
     private int stockQuantity;
-
-    public Item toEntity() {
-        return Item.builder()
-                .itemName(itemName)
-                .price(price)
-                .stockQuantity(stockQuantity)
-                .build();
-    }
 }

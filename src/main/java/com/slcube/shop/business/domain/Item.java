@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,10 +32,6 @@ public class Item extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Builder
-    private Item(String itemName, int price, int stockQuantity) {
-        this.itemName = itemName;
-        this.price = price;
-        this.stockQuantity = stockQuantity;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
+    private List<Review> reviews = new ArrayList<>();
 }

@@ -40,7 +40,7 @@ public class Member {
     @Column(nullable = false)
     private int point;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<Address> addresses = new ArrayList<>();
 
 

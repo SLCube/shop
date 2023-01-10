@@ -30,7 +30,7 @@ public class Address {
     @Column(nullable = false)
     private boolean isDefaultAddress;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 }
