@@ -4,10 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,4 +29,8 @@ public class Address {
 
     @Column(nullable = false)
     private boolean isDefaultAddress;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 }
