@@ -1,7 +1,6 @@
 package com.slcube.shop.business.domain;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,20 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Category extends BaseEntity{
+public class Order {
 
     @Id
     @GeneratedValue
-    @Column(name = "category_id")
+    @Column(name = "order_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String categoryName;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Builder
-    private Category(String categoryName) {
-        this.categoryName = categoryName;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

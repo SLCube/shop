@@ -43,5 +43,12 @@ public class Member {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<Address> addresses = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cart_id")
+    private Cart cart;
 }

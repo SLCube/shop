@@ -28,9 +28,8 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private int stockQuantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @OneToMany(mappedBy = "item")
+    private List<ItemCategory> itemCategories = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<Review> reviews = new ArrayList<>();

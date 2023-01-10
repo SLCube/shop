@@ -9,21 +9,18 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class CartItem extends BaseEntity {
+public class OrderItem {
 
     @Id
     @GeneratedValue
-    @Column(name = "cart_item_id")
+    @Column(name = "order_item_id")
     private Long id;
 
-    @Column(nullable = false)
-    private int quantity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
 }
