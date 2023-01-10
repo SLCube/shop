@@ -1,7 +1,6 @@
 package com.slcube.shop.business.domain;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
