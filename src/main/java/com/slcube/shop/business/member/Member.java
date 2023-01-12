@@ -1,7 +1,7 @@
 package com.slcube.shop.business.member;
 
 import com.slcube.shop.business.cart.domain.Cart;
-import com.slcube.shop.business.address.Address;
+import com.slcube.shop.business.address.domain.Address;
 import com.slcube.shop.business.order.domain.Order;
 import com.slcube.shop.business.review.domain.Review;
 import lombok.AccessLevel;

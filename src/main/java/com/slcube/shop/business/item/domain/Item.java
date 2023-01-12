@@ -1,7 +1,6 @@
 package com.slcube.shop.business.item.domain;
 
 import com.slcube.shop.common.domain.BaseEntity;
-import com.slcube.shop.business.item.ItemCategory;
 import com.slcube.shop.business.review.domain.Review;
 import lombok.AccessLevel;
 import lombok.Getter;

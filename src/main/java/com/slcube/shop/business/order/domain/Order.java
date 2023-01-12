@@ -2,8 +2,6 @@ package com.slcube.shop.business.order.domain;
 
 import com.slcube.shop.business.delivery.domain.Delivery;
 import com.slcube.shop.business.member.Member;
-import com.slcube.shop.business.order.OrderItem;
-import com.slcube.shop.business.order.OrderStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

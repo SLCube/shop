@@ -1,4 +1,4 @@
-package com.slcube.shop.business.review;
+package com.slcube.shop.business.review.domain;
 
 import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.business.review.domain.Review;

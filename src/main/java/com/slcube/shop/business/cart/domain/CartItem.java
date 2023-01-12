@@ -1,7 +1,8 @@
-package com.slcube.shop.business.order;
+package com.slcube.shop.business.cart.domain;
 
+import com.slcube.shop.common.domain.BaseEntity;
+import com.slcube.shop.business.cart.domain.Cart;
 import com.slcube.shop.business.item.domain.Item;
-import com.slcube.shop.business.order.domain.Order;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,18 +12,21 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class OrderItem {
+public class CartItem extends BaseEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "order_item_id")
+    @Column(name = "cart_item_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column(nullable = false)
+    private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 }

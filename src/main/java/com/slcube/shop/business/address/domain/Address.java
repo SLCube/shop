@@ -1,4 +1,4 @@
-package com.slcube.shop.business.address;
+package com.slcube.shop.business.address.domain;
 
 import com.slcube.shop.business.member.Member;
 import lombok.AccessLevel;

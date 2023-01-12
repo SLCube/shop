@@ -1,7 +1,7 @@
-package com.slcube.shop.business.address;
+package com.slcube.shop.business.address.service;
 
-import com.slcube.shop.business.address.AddressSaveRequestDto;
-import com.slcube.shop.business.address.AddressUpdateRequestDto;
+import com.slcube.shop.business.address.dto.AddressSaveRequestDto;
+import com.slcube.shop.business.address.dto.AddressUpdateRequestDto;
 import org.springframework.stereotype.Service;
 
 @Service

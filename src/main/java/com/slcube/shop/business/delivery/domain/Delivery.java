@@ -1,6 +1,6 @@
 package com.slcube.shop.business.delivery.domain;
 
-import com.slcube.shop.business.address.Address;
+import com.slcube.shop.business.address.domain.Address;
 import com.slcube.shop.business.order.domain.Order;
 import lombok.AccessLevel;
 import lombok.Getter;
