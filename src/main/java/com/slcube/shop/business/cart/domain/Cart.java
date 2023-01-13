@@ -1,7 +1,7 @@
 package com.slcube.shop.business.cart.domain;
 
 import com.slcube.shop.common.domain.BaseEntity;
-import com.slcube.shop.business.member.Member;
+import com.slcube.shop.business.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

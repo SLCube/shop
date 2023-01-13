@@ -1,4 +1,4 @@
-package com.slcube.shop.business.member;
+package com.slcube.shop.business.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;

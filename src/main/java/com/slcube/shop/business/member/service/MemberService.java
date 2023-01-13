@@ -1,7 +1,7 @@
-package com.slcube.shop.business.member;
+package com.slcube.shop.business.member.service;
 
-import com.slcube.shop.business.member.MemberChangePasswordRequestDto;
-import com.slcube.shop.business.member.MemberSignUpRequestDto;
+import com.slcube.shop.business.member.dto.MemberChangePasswordRequestDto;
+import com.slcube.shop.business.member.dto.MemberSignUpRequestDto;
 import org.springframework.stereotype.Service;
 
 @Service

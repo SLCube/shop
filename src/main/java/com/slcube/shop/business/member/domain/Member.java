@@ -1,4 +1,4 @@
-package com.slcube.shop.business.member;
+package com.slcube.shop.business.member.domain;
 
 import com.slcube.shop.business.cart.domain.Cart;
 import com.slcube.shop.business.address.domain.Address;
