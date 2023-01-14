@@ -60,6 +60,6 @@ public class Item extends BaseEntity {
     }
 
     public void deleteItem() {
-        this.isDeleted = true;
+        this.isDeleted = Boolean.TRUE;
     }
 }

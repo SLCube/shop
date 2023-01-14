@@ -1,5 +1,6 @@
 package com.slcube.shop.business.category.domain;
 
+import com.slcube.shop.business.category.dto.CategoryUpdateRequestDto;
 import com.slcube.shop.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,7 +23,11 @@ public class Category extends BaseEntity {
     private String categoryName;
 
     @Builder
-    private Category(Long id, String categoryName) {
+    private Category(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public void updateCategory(CategoryUpdateRequestDto requestDto) {
+        this.categoryName = requestDto.getCategoryName();
     }
 }
