@@ -22,7 +22,7 @@ public class Category extends BaseEntity {
     private String categoryName;
 
     @Builder
-    private Category(String categoryName) {
+    private Category(Long id, String categoryName) {
         this.categoryName = categoryName;
     }
 }
