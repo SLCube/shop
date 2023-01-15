@@ -2,10 +2,8 @@ package com.slcube.shop.business.category.dto;
 
 import com.slcube.shop.business.category.domain.Category;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class CategoryListResponseDto {
 
     private Long categoryId;
