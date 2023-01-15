@@ -2,6 +2,7 @@ package com.slcube.shop.business.category.service;
 
 import com.slcube.shop.business.category.domain.Category;
 import com.slcube.shop.business.category.dto.CategoryListResponseDto;
+import com.slcube.shop.business.category.dto.CategoryResponseDto;
 import com.slcube.shop.business.category.dto.CategorySaveRequestDto;
 import com.slcube.shop.business.category.dto.CategoryUpdateRequestDto;
 import com.slcube.shop.business.category.repository.CategoryRepository;
@@ -44,6 +45,14 @@ public class CategoryServiceImpl implements CategoryService{
         categoryRepository.delete(category);
 
         return category.getId();
+    }
+
+    @Override
+    public CategoryResponseDto findCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("카테고리 정보를 찾을 수 없습니다. id = " + categoryId));
+
+        return new CategoryResponseDto(category);
     }
 
     @Override
