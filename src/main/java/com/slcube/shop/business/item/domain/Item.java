@@ -37,7 +37,7 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -49,5 +49,22 @@ public class Item extends BaseEntity {
         this.itemName = itemName;
         this.price = price;
         this.stockQuantity = stockQuantity;
+    }
+
+    public void addCategory(Category category) {
+        this.category = category;
+        category.getItems().add(this);
+    }
+
+    public void updateItem(ItemUpdateRequestDto requestDto, Category category) {
+        this.itemName = requestDto.getItemName();
+        this.price = requestDto.getPrice();
+        this.stockQuantity = requestDto.getStockQuantity();
+        this.category.getItems().remove(this);
+        addCategory(category);
+    }
+
+    public void deleteItem() {
+        this.isDeleted = Boolean.TRUE;
     }
 }

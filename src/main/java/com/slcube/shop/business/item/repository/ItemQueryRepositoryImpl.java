@@ -3,22 +3,30 @@ package com.slcube.shop.business.item.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.slcube.shop.business.item.domain.Item;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
 
-import static com.slcube.shop.business.item.domain.QItem.item;
-import static com.slcube.shop.business.item.domain.QItemCategory.*;
+import static com.slcube.shop.business.category.domain.QCategory.*;
+import static com.slcube.shop.business.item.domain.QItem.*;
 
 @RequiredArgsConstructor
-public class ItemQueryRepositoryImpl implements ItemQueryRepository{
+public class ItemQueryRepositoryImpl implements ItemQueryRepository {
 
     private final JPAQueryFactory query;
 
     @Override
-    public List<Item> findByCategory(Long categoryId) {
+    public List<Item> findByCategoryId(Long categoryId, Pageable pageable) {
+
         return query.selectFrom(item)
-                .join(item.itemCategories, itemCategory)
-                .where(itemCategory.category.id.eq(categoryId))
+                .join(item.category, category)
+                .where(
+                        category.id.eq(categoryId),
+                        item.isDeleted.eq(Boolean.FALSE)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 }

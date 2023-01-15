@@ -18,11 +18,9 @@ public class ItemResponseDto {
         this.price = price;
     }
 
-    public static ItemResponseDto toDto(Item item) {
-        return ItemResponseDto.builder()
-                .itemId(item.getId())
-                .itemName(item.getItemName())
-                .price(item.getPrice())
-                .build();
+    public ItemResponseDto(Item item) {
+        itemId = item.getId();
+        itemName = item.getItemName();
+        price = item.getPrice();
     }
 }
