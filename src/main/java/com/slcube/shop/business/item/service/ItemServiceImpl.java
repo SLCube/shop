@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new IllegalArgumentException("카테고리 정보를 찾을 수 없습니다. id = " + categoryId));
 
         item.updateItem(requestDto, category);
-        return null;
+        return requestDto.getItemId();
     }
 
     @Override
