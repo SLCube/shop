@@ -20,29 +20,30 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public Long saveCategory(CategorySaveRequestDto requestDto) {
         Category category = requestDto.toEntity();
         return categoryRepository.save(category).getId();
     }
 
     @Override
-    public Long deleteCategory(Long categoryId) {
+    public Long updateCategory(CategoryUpdateRequestDto requestDto) {
+        Long categoryId = requestDto.getCategoryId();
+
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다. id = " + categoryId));
-
-        categoryRepository.delete(category);
-
-        return categoryId;
+                .orElseThrow(() -> new IllegalArgumentException("카테고리 정보를 찾을 수 없습니다. id = " + categoryId));
+        category.updateCategory(requestDto);
+        return category.getId();
     }
 
     @Override
-    public Long updateCategory(CategoryUpdateRequestDto requestDto) {
-        Long categoryId = requestDto.getCategoryId();
+    public Long deleteCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다. id = " + categoryId));
+                .orElseThrow(() -> new IllegalArgumentException("카테고리 정보를 찾을 수 없습니다. id = " + categoryId));
 
-        category.updateCategory(requestDto);
-        return categoryId;
+        categoryRepository.delete(category);
+
+        return category.getId();
     }
 
     @Override

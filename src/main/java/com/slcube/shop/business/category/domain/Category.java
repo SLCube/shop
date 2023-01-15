@@ -33,4 +33,8 @@ public class Category extends BaseEntity {
         this.categoryName = categoryName;
     }
 
+
+    public void updateCategory(CategoryUpdateRequestDto requestDto) {
+        this.categoryName = requestDto.getCategoryName();
+    }
 }
