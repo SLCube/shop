@@ -1,5 +1,6 @@
 package com.slcube.shop.business.item.domain;
 
+import com.slcube.shop.business.category.domain.Category;
 import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
 import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.business.review.domain.Review;
@@ -36,8 +37,9 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    private List<ItemCategory> itemCategories = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<Review> reviews = new ArrayList<>();
@@ -47,19 +49,5 @@ public class Item extends BaseEntity {
         this.itemName = itemName;
         this.price = price;
         this.stockQuantity = stockQuantity;
-    }
-
-    public void addCategory(ItemCategory itemCategory) {
-        this.itemCategories.add(itemCategory);
-        itemCategory.addItem(this);
-    }
-
-    public void updateItem(ItemUpdateRequestDto requestDto) {
-        this.itemName = requestDto.getItemName();
-        this.price = requestDto.getPrice();
-    }
-
-    public void deleteItem() {
-        this.isDeleted = Boolean.TRUE;
     }
 }
