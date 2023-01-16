@@ -1,4 +1,4 @@
-package com.slcube.shop.common.domain.config.jpa;
+package com.slcube.shop.common.config.jpa;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

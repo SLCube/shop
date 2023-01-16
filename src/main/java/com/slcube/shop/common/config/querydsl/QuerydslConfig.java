@@ -1,4 +1,4 @@
-package com.slcube.shop.common.domain.config.querydsl;
+package com.slcube.shop.common.config.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
