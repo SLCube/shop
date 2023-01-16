@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public List<CategoryListResponseDto> findCategories() {
+    public List<CategoryListResponseDto> findAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(CategoryListResponseDto::new)
                 .collect(Collectors.toList());
