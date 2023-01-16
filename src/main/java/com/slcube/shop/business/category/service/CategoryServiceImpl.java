@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService{
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("카테고리 정보를 찾을 수 없습니다. id = " + categoryId));
-        category.updateCategory(requestDto);
+        category.updateCategory(requestDto.getCategoryName());
         return category.getId();
     }
 
