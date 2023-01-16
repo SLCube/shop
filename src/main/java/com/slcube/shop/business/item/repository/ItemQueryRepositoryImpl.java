@@ -20,7 +20,7 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
     public List<Item> findByCategoryId(Long categoryId, Pageable pageable) {
 
         return query.selectFrom(item)
-                .join(item.category, category)
+                .innerJoin(item.category, category).fetchJoin()
                 .where(
                         category.id.eq(categoryId),
                         item.isDeleted.eq(Boolean.FALSE)
