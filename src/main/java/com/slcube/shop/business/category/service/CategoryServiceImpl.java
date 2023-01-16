@@ -1,10 +1,7 @@
 package com.slcube.shop.business.category.service;
 
 import com.slcube.shop.business.category.domain.Category;
-import com.slcube.shop.business.category.dto.CategoryListResponseDto;
-import com.slcube.shop.business.category.dto.CategoryResponseDto;
-import com.slcube.shop.business.category.dto.CategorySaveRequestDto;
-import com.slcube.shop.business.category.dto.CategoryUpdateRequestDto;
+import com.slcube.shop.business.category.dto.*;
 import com.slcube.shop.business.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +20,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     @Transactional
     public Long saveCategory(CategorySaveRequestDto requestDto) {
-        Category category = requestDto.toEntity();
+        Category category = CategoryMapper.toEntity(requestDto);
         return categoryRepository.save(category).getId();
     }
 

@@ -1,6 +1,5 @@
 package com.slcube.shop.business.category.dto;
 
-import com.slcube.shop.business.category.domain.Category;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,11 +11,5 @@ public class CategorySaveRequestDto {
     @Builder
     private CategorySaveRequestDto(String categoryName) {
         this.categoryName = categoryName;
-    }
-
-    public Category toEntity() {
-        return Category.builder()
-                .categoryName(this.categoryName)
-                .build();
     }
 }
