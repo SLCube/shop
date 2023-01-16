@@ -45,7 +45,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("상품 등록")
-    void saveItem() {
+    void saveItemTest() {
         // given
         ItemSaveRequestDto requestDto = new ItemSaveRequestDto();
         requestDto.setCategoryId(categoryId1);
@@ -66,7 +66,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("상품 수정")
-    void updateItem() {
+    void updateItemTest() {
         // given
         ItemSaveRequestDto requestDto = new ItemSaveRequestDto();
         requestDto.setCategoryId(categoryId1);
@@ -97,7 +97,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("상품 삭제")
-    void deleteItem() {
+    void deleteItemTest() {
         // given
         ItemSaveRequestDto requestDto = new ItemSaveRequestDto();
         requestDto.setCategoryId(categoryId1);

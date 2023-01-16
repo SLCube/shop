@@ -22,7 +22,7 @@ class CategoryServiceTest {
 
     @Test
     @DisplayName("카테고리 저장")
-    void saveCategory() {
+    void saveCategoryTest() {
         // given
         CategorySaveRequestDto requestDto = CategorySaveRequestDto.builder()
                 .categoryName("test CategoryName")
@@ -39,7 +39,7 @@ class CategoryServiceTest {
 
     @Test
     @DisplayName("카테고리 수정")
-    void updateCategory() {
+    void updateCategoryTest() {
         // given
         CategorySaveRequestDto requestDto = CategorySaveRequestDto.builder()
                 .categoryName("test CategoryName")
@@ -61,7 +61,7 @@ class CategoryServiceTest {
 
     @Test
     @DisplayName("카테고리 삭제")
-    void deleteCategory() {
+    void deleteCategoryTest() {
         // given
         CategorySaveRequestDto requestDto = CategorySaveRequestDto.builder()
                 .categoryName("test CategoryName")
