@@ -2,6 +2,7 @@ package com.slcube.shop.business.item.service;
 
 import com.slcube.shop.business.category.domain.Category;
 import com.slcube.shop.business.category.repository.CategoryRepository;
+import com.slcube.shop.business.category.repository.CategoryRepositoryHelper;
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.dto.*;
 import com.slcube.shop.business.item.repository.ItemRepository;
@@ -22,6 +23,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
+    private final CategoryRepositoryHelper categoryRepositoryHelper;
 
     @Override
     @Transactional
@@ -29,8 +31,7 @@ public class ItemServiceImpl implements ItemService {
         Long categoryId = requestDto.getCategoryId();
 
         Item item = ItemMapper.toEntity(requestDto);
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("카테고리 정보를 찾을 수 없습니다. id = " + categoryId));
+        Category category = categoryRepositoryHelper.findById(categoryRepository, categoryId);
 
         item.addCategory(category);
 
@@ -44,10 +45,8 @@ public class ItemServiceImpl implements ItemService {
         Long itemId = requestDto.getItemId();
         Long categoryId = requestDto.getCategoryId();
 
-        Item item = itemRepository.findByNotDeleted(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품 정보를 찾을 수 없습니다. id = " + itemId));
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("카테고리 정보를 찾을 수 없습니다. id = " + categoryId));
+        Item item = findById(itemId);
+        Category category = categoryRepositoryHelper.findById(categoryRepository, categoryId);
 
         item.updateItem(requestDto, category);
         return requestDto.getItemId();
@@ -56,8 +55,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Long deleteItem(Long itemId) {
-        Item item = itemRepository.findByNotDeleted(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품 정보를 찾을 수 없습니다. id = " + itemId));
+        Item item = findById(itemId);
 
         item.deleteItem();
 
@@ -66,8 +64,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemResponseDto findItem(Long itemId) {
-        Item item = itemRepository.findByNotDeleted(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품 정보를 찾을 수 없습니다. id = " + itemId));
+        Item item = findById(itemId);
 
         return new ItemResponseDto(item);
     }
@@ -79,5 +76,11 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(result, pageable, result.size());
+    }
+
+    // method로 뽑으면 다른곳에서 item을 조회할때 똑같은 로직을 다시 작성해야겠지??
+    private Item findById(Long itemId) {
+        return itemRepository.findByNotDeleted(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("상품 정보를 찾을 수 없습니다. id = " + itemId));
     }
 }

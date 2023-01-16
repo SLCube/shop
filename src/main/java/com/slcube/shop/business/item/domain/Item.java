@@ -4,7 +4,7 @@ import com.slcube.shop.business.category.domain.Category;
 import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
 import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.business.review.domain.Review;
-import com.slcube.shop.common.domain.config.jpa.BooleanToYnConverter;
+import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
