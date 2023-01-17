@@ -2,15 +2,17 @@ package com.slcube.shop.business.category.dto;
 
 import com.slcube.shop.business.category.domain.Category;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class CategoryListResponseDto {
+@Setter
+public class CategoryResponseDto {
 
     private Long categoryId;
     private String categoryName;
 
-    public CategoryListResponseDto(Category category) {
-        this.categoryId = category.getId();
-        this.categoryName = category.getCategoryName();
+    public CategoryResponseDto(Category category) {
+        categoryId = category.getId();
+        categoryName = category.getCategoryName();
     }
 }
