@@ -1,8 +1,8 @@
 package com.slcube.shop.business.review.domain;
 
 import com.slcube.shop.common.domain.BaseEntity;
-import com.slcube.shop.business.review.domain.Review;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +23,13 @@ public class ReportedReview extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
+
+    @Builder
+    private ReportedReview(String reportedReason) {
+        this.reportedReason = reportedReason;
+    }
+
+    public void addReview(Review review) {
+        this.review = review;
+    }
 }

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReviewReportRequestDto {
+public class ReportedReviewSaveRequestDto {
 
     private Long reviewId;
     private String reportedReason;
