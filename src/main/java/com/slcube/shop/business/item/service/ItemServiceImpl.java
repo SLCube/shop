@@ -6,6 +6,7 @@ import com.slcube.shop.business.category.repository.CategoryRepositoryHelper;
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.dto.*;
 import com.slcube.shop.business.item.repository.ItemRepository;
+import com.slcube.shop.business.item.repository.ItemRepositoryHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final ItemRepositoryHelper itemRepositoryHelper;
     private final CategoryRepository categoryRepository;
     private final CategoryRepositoryHelper categoryRepositoryHelper;
 
@@ -45,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
         Long itemId = requestDto.getItemId();
         Long categoryId = requestDto.getCategoryId();
 
-        Item item = findById(itemId);
+        Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
         Category category = categoryRepositoryHelper.findById(categoryRepository, categoryId);
 
         item.updateItem(requestDto, category);
@@ -55,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Long deleteItem(Long itemId) {
-        Item item = findById(itemId);
+        Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
 
         item.deleteItem();
 
@@ -64,7 +66,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemResponseDto findItem(Long itemId) {
-        Item item = findById(itemId);
+        Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
 
         return new ItemResponseDto(item);
     }
@@ -76,11 +78,5 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(result, pageable, result.size());
-    }
-
-    // method로 뽑으면 다른곳에서 item을 조회할때 똑같은 로직을 다시 작성해야겠지??
-    private Item findById(Long itemId) {
-        return itemRepository.findByNotDeleted(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품 정보를 찾을 수 없습니다. id = " + itemId));
     }
 }
