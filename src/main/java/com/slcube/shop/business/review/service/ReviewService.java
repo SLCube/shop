@@ -1,19 +1,16 @@
 package com.slcube.shop.business.review.service;
 
-import com.slcube.shop.business.review.dto.ReportedReviewListResponseDto;
-import com.slcube.shop.business.review.dto.ReviewListResponseDto;
-import com.slcube.shop.business.review.dto.ReviewReportRequestDto;
-import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
+import com.slcube.shop.business.review.dto.*;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-@Service
 public interface ReviewService {
 
     public Long saveReview(ReviewSaveRequestDto requestDto);
     public Long deleteReview(Long reviewId);
     public Long recommendReview(Long reviewId);
-    public Page<ReviewListResponseDto> findReviews(Long itemId, int pageNo);
-    public Long ReportReview(ReviewReportRequestDto requestDto);
-    public Page<ReportedReviewListResponseDto> findReportedReview(int pageNo);
+    public ReviewResponseDto findReview(Long reviewId);
+    public Page<ReviewListResponseDto> findReviews(Long itemId, Pageable pageable);
+    public Long reportReview(ReportedReviewSaveRequestDto requestDto);
+    public Page<ReportedReviewListResponseDto> findReportedReviews(Pageable pageable);
 }
