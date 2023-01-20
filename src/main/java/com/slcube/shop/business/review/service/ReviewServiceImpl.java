@@ -1,7 +1,6 @@
 package com.slcube.shop.business.review.service;
 
 import com.slcube.shop.business.item.domain.Item;
-import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.review.domain.ReportedReview;
 import com.slcube.shop.business.review.domain.Review;
 import com.slcube.shop.business.review.dto.*;
@@ -28,14 +27,11 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepositoryHelper reviewRepositoryHelper;
     private final ReviewValidation reviewValidation;
     private final ReportedReviewRepository reportedReviewRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     public Long saveReview(ReviewSaveRequestDto requestDto) {
         Long itemId = requestDto.getItemId();
         Item item = reviewValidation.validateCreateReview(itemId);
-
-        //
 
         Review review = ReviewMapper.toEntity(requestDto);
         review.addItem(item);
@@ -60,6 +56,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public ReviewResponseDto findReview(Long reviewId) {
+        Review review = reviewRepositoryHelper.findByNotDeleted(reviewRepository, reviewId);
+
+        return new ReviewResponseDto(review);
+    }
+
+    @Override
     public Page<ReviewListResponseDto> findReviews(Long itemId, Pageable pageable) {
         List<ReviewListResponseDto> reviews = reviewRepository.findByItemId(itemId, pageable).stream()
                 .map(ReviewListResponseDto::new)
@@ -69,7 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Long ReportReview(ReportedReviewSaveRequestDto requestDto) {
+    public Long reportReview(ReportedReviewSaveRequestDto requestDto) {
         Review review = reviewRepositoryHelper.findByNotDeleted(reviewRepository, requestDto.getReviewId());
 
         ReportedReview reportedReview = ReportedReviewMapper.toEntity(requestDto);
@@ -78,7 +81,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReportedReviewListResponseDto> findReportedReview(Pageable pageable) {
+    public Page<ReportedReviewListResponseDto> findReportedReviews(Pageable pageable) {
         List<ReportedReviewListResponseDto> reportedReviews = reportedReviewRepository.findAll(pageable).stream()
                 .map(ReportedReviewListResponseDto::new)
                 .collect(Collectors.toList());
