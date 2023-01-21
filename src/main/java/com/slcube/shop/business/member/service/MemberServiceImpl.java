@@ -19,6 +19,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public Long signUp(MemberSignUpRequestDto requestDto) {
         String password = requestDto.getPassword();
         requestDto.setPassword(passwordEncoder.encode(password));
@@ -41,6 +42,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Long changePassword(MemberChangePasswordRequestDto requestDto) {
         String email = requestDto.getEmail();
         Member member = memberRepositoryHelper.findByEmail(memberRepository, email);
