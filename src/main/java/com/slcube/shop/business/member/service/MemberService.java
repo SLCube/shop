@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public interface MemberService {
 
     public Long signUp(MemberSignUpRequestDto requestDto);
-    public MemberResponseDto findMember(Long memberId);
     public MemberResponseDto login(MemberLoginDto requestDto);
 
     public Long changePassword(MemberChangePasswordRequestDto requestDto);

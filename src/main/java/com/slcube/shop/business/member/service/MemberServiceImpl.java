@@ -26,14 +26,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberResponseDto findMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
-
-        return new MemberResponseDto(member);
-    }
-
-    @Override
     public MemberResponseDto login(MemberLoginDto requestDto) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
