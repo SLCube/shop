@@ -4,7 +4,6 @@ import com.slcube.shop.business.cart.domain.Cart;
 import com.slcube.shop.business.address.domain.Address;
 import com.slcube.shop.business.order.domain.Order;
 import com.slcube.shop.business.review.domain.Review;
-import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,8 +42,8 @@ public class Member {
     private LocalDateTime signOutDate;
 
     @Column(nullable = false)
-    @Convert(converter = BooleanToYnConverter.class)
-    private boolean isSignOut;
+    @Enumerated(EnumType.STRING)
+    private MemberStatus memberStatus = MemberStatus.SIGN_UP;
 
     @Column(nullable = false)
     private int point;
