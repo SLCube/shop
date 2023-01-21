@@ -5,6 +5,7 @@ import com.slcube.shop.business.category.repository.CategoryRepository;
 import com.slcube.shop.business.item.dto.ItemResponseDto;
 import com.slcube.shop.business.item.dto.ItemSaveRequestDto;
 import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
+import com.slcube.shop.common.exception.CustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -111,7 +112,7 @@ class ItemServiceTest {
         Long deleteItemId = itemService.deleteItem(itemId);
 
         // then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(CustomException.class,
                 () -> itemService.findItem(deleteItemId));
     }
 }
