@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
@@ -23,7 +22,6 @@ public class MemberServiceImpl implements MemberService {
         String password = requestDto.getPassword();
         requestDto.setPassword(passwordEncoder.encode(password));
 
-        log.debug("password : {}", requestDto.getPassword());
         Member member = MemberMapper.toEntity(requestDto);
         return memberRepository.save(member).getId();
     }
