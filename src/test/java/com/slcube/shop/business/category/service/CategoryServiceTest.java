@@ -3,6 +3,7 @@ package com.slcube.shop.business.category.service;
 import com.slcube.shop.business.category.dto.CategoryResponseDto;
 import com.slcube.shop.business.category.dto.CategorySaveRequestDto;
 import com.slcube.shop.business.category.dto.CategoryUpdateRequestDto;
+import com.slcube.shop.common.exception.CategoryNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ class CategoryServiceTest {
         Long deletedCategoryId = categoryService.deleteCategory(categoryId);
 
         // then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(CategoryNotFoundException.class,
                 () -> categoryService.findCategory(deletedCategoryId));
     }
 }

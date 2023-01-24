@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 public enum CustomErrorCode {
     REVIEWS_NOT_FOUND(NOT_FOUND, "리뷰 정보를 찾을 수 없습니다."),
+    CATEGORIES_NOT_FOUND(NOT_FOUND, "카테고리 정보를 찾을 수 없습니다."),
 
     ITEMS_NOT_FOUND(NOT_FOUND, "상품 정보를 찾을 수 없습니다."),
     MEMBER_NOT_FOUND(NOT_FOUND, "계정 정보를 찾을 수 없습니다."),
