@@ -39,7 +39,7 @@ public class Member extends BaseTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus = MemberStatus.SIGN_UP;
+    private MemberStatus memberStatus = MemberStatus.MEMBER;
 
     @Column(nullable = false)
     private int point;
