@@ -12,7 +12,7 @@ public class CustomErrorResponse {
     private LocalDateTime timestamp = LocalDateTime.now();
     private int status;
     private String error;
-    private String code;
+    private CustomErrorCode errorCode;
     private String message;
 
     public static ResponseEntity<CustomErrorResponse> toResponseEntity(CustomErrorCode errorCode) {
@@ -21,16 +21,16 @@ public class CustomErrorResponse {
                 .body(CustomErrorResponse.builder()
                         .status(errorCode.getHttpStatus().value())
                         .error(errorCode.getHttpStatus().name())
-                        .code(errorCode.name())
+                        .errorCode(errorCode)
                         .message(errorCode.getErrorMessage())
                         .build());
     }
 
     @Builder
-    private CustomErrorResponse(int status, String error, String code, String message) {
+    private CustomErrorResponse(int status, String error, CustomErrorCode errorCode, String message) {
         this.status = status;
         this.error = error;
-        this.code = code;
+        this.errorCode = errorCode;
         this.message = message;
     }
 }

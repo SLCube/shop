@@ -12,4 +12,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<CustomErrorResponse> handleCustomException(CustomException e) {
         return CustomErrorResponse.toResponseEntity(e.getErrorCode());
     }
+
+    @ExceptionHandler(value = {Exception.class})
+    protected ResponseEntity handleException(Exception e) {
+        return CustomErrorResponse.toResponseEntity(CustomErrorCode.INTERNAL_SERVER_ERROR);
+    }
 }
