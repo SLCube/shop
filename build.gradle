@@ -10,6 +10,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.6'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id "jacoco"
 }
 
 group = 'com.slcube'
@@ -43,7 +44,52 @@ dependencies {
 }
 
 tasks.named('test') {
+	finalizedBy jacocoTestReport
 	useJUnitPlatform()
+}
+
+/*
+ * jacoco 설정 추가
+ */
+jacoco {
+	toolVersion= "0.8.8"
+
+	// 테스트결과 리포트를 저장할 경로 변경
+	// default $buildDir/reports/jacoco
+	 reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+jacocoTestReport {
+	reports {
+		xml.required =  false
+		csv.required =  false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
+	dependsOn test
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+
+	def Qdomains = []
+
+	for(qPattern in "*.QA".."*.QZ") {
+		Qdomains.add(qPattern + "*")
+	}
+
+	violationRules {
+		rule {
+			element = 'CLASS'
+
+			limit {
+				counter = 'METHOD'
+				value = 'COVEREDRATIO'
+				minimum = 0.9
+			}
+
+			excludes = [] + Qdomains
+		}
+	}
 }
 
 /*
