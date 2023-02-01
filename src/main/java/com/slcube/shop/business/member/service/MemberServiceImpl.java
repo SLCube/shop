@@ -5,19 +5,29 @@ import com.slcube.shop.business.member.domain.MemberStatus;
 import com.slcube.shop.business.member.dto.*;
 import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.member.repository.MemberRepositoryHelper;
+import com.slcube.shop.common.exception.MemberNotFoundException;
+import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService {
+public class MemberServiceImpl implements MemberService, UserDetailsService {
 
+    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final MemberRepositoryHelper memberRepositoryHelper;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -30,16 +40,20 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberResponseDto login(MemberLoginDto requestDto) {
-        String email = requestDto.getEmail();
-        String password = requestDto.getPassword();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberRepositoryHelper.findByEmailAndMemberStatus(memberRepository, email, MemberStatus.MEMBER);
 
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new IllegalArgumentException("아이디 혹은 비밀번호를 확인해주세요.");
+        if (member == null) {
+            throw new UsernameNotFoundException(new MemberNotFoundException().getMessage());
         }
 
-        return new MemberResponseDto(member);
+        List<GrantedAuthority> roles = new ArrayList<>();
+
+        roles.add(new SimpleGrantedAuthority(member.getMemberStatus().name()));
+
+        MemberContext memberContext = new MemberContext(member, roles);
+
+        return memberContext;
     }
 
     @Override

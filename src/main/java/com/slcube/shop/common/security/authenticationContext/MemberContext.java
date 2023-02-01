@@ -1,4 +1,4 @@
-package com.slcube.shop.common.security.service;
+package com.slcube.shop.common.security.authenticationContext;
 
 import com.slcube.shop.business.member.domain.Member;
 import lombok.Getter;

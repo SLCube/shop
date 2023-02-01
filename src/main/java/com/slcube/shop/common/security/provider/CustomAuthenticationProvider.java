@@ -1,6 +1,6 @@
 package com.slcube.shop.common.security.provider;
 
-import com.slcube.shop.common.security.service.MemberContext;
+import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import com.slcube.shop.common.security.token.AuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;

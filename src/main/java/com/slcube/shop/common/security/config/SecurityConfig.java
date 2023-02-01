@@ -1,4 +1,4 @@
-package com.slcube.shop.common.security;
+package com.slcube.shop.common.security.config;
 
 import com.slcube.shop.common.security.filter.LoginProcessingFilter;
 import com.slcube.shop.common.security.handler.CustomAuthenticationFailureHandler;
@@ -15,9 +15,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -26,11 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -52,7 +49,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
+        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
     }
 
     @Bean
@@ -64,12 +61,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CustomAuthenticationSuccessHandler authenticationSuccessHandler() {
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
-    public CustomAuthenticationFailureHandler authenticationFailureHandler() {
+    public AuthenticationFailureHandler authenticationFailureHandler() {
         return new CustomAuthenticationFailureHandler();
     }
 
