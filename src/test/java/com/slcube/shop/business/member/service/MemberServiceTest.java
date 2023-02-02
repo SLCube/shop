@@ -1,13 +1,16 @@
 package com.slcube.shop.business.member.service;
 
+import com.slcube.shop.business.member.domain.Member;
 import com.slcube.shop.business.member.dto.MemberChangePasswordRequestDto;
 import com.slcube.shop.business.member.dto.MemberLoginDto;
-import com.slcube.shop.business.member.dto.MemberResponseDto;
 import com.slcube.shop.business.member.dto.MemberSignUpRequestDto;
+import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -19,6 +22,12 @@ class MemberServiceTest {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("회원가입")
@@ -35,11 +44,13 @@ class MemberServiceTest {
         loginDto.setEmail("test@naver.com");
         loginDto.setPassword("test password");
 
-        MemberResponseDto responseDto = memberService.login(loginDto);
+        MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(loginDto.getEmail());
+        Member member = memberContext.getMember();
 
         assertAll(
-                () -> assertThat(responseDto.getUsername()).isEqualTo("test user name"),
-                () -> assertThat(responseDto.getEmail()).isEqualTo("test@naver.com")
+                () -> assertThat(member.getEmail()).isEqualTo("test@naver.com"),
+                () -> assertThat(passwordEncoder.matches("test password", member.getPassword())).isTrue(),
+                () -> assertThat(member.getUsername()).isEqualTo("test user name")
         );
     }
 
@@ -64,12 +75,10 @@ class MemberServiceTest {
         loginDto.setEmail("test@naver.com");
         loginDto.setPassword("test change password");
 
-        MemberResponseDto responseDto = memberService.login(loginDto);
+        MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(loginDto.getEmail());
+        Member member = memberContext.getMember();
 
-        assertAll(
-                () -> assertThat(responseDto.getEmail()).isEqualTo("test@naver.com"),
-                () -> assertThat(responseDto.getUsername()).isEqualTo("test user name")
-        );
+        assertThat(passwordEncoder.matches("test change password", member.getPassword())).isTrue();
     }
 
     private static MemberSignUpRequestDto createMember() {

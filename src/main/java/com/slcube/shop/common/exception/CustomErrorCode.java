@@ -10,11 +10,16 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 @Getter
 public enum CustomErrorCode {
+
+    INVALID_EMAIL_OR_PASSWORD(UNAUTHORIZED, "아이디 혹은 비밀번호를 확인해주세요."),
+    SESSION_EXPIRED(UNAUTHORIZED, "세션이 만료되었습니다."),
+    DISABLED_MEMBER(FORBIDDEN, "비활성화된 계정입니다."),
     REVIEWS_NOT_FOUND(NOT_FOUND, "리뷰 정보를 찾을 수 없습니다."),
     CATEGORIES_NOT_FOUND(NOT_FOUND, "카테고리 정보를 찾을 수 없습니다."),
 
     ITEMS_NOT_FOUND(NOT_FOUND, "상품 정보를 찾을 수 없습니다."),
     MEMBER_NOT_FOUND(NOT_FOUND, "계정 정보를 찾을 수 없습니다."),
+
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러입니다.");
 
     private HttpStatus httpStatus;
