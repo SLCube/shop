@@ -49,9 +49,19 @@ public class EmbeddedRedisConfig {
     }
 
     private Process excuteGrepProcess(int port) throws IOException {
-        String command = String.format("netstat -nat | grep LISTEN|grep %d", port);
-        String[] shell = {"/bin/sh", "-c", command};
-        return Runtime.getRuntime().exec(shell);
+        String osName = System.getProperty("os.name").toLowerCase();
+        String command;
+        if (osName.contains("mac") || osName.contains("linux")) {
+            command = String.format("netstat -nat | grep LISTEN|grep %d", port);
+            String[] shell = {"/bin/sh", "-c", command};
+            return Runtime.getRuntime().exec(shell);
+        } else if (osName.contains("window")) {
+            command = String.format("netstat -ano | find %d", port);
+            String[] cmd = {"cmd", "/c", command};
+            return Runtime.getRuntime().exec(cmd);
+        }
+
+        throw new IllegalStateException("Not Supported OS");
     }
 
     private boolean isRunning(Process process) {
