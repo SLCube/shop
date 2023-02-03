@@ -10,7 +10,8 @@ public interface ReviewService {
     public Long deleteReview(Long reviewId);
     public Long recommendReview(Long reviewId);
     public ReviewResponseDto findReview(Long reviewId);
-    public Page<ReviewListResponseDto> findReviews(Long itemId, Pageable pageable);
+    public Page<ReviewListResponseDto> findAllReviews(Long itemId, Pageable pageable);
     public Long reportReview(ReportedReviewSaveRequestDto requestDto);
-    public Page<ReportedReviewListResponseDto> findReportedReviews(Pageable pageable);
+    public ReportedReviewResponseDto findReportedReview(Long reportedReviewId);
+    public Page<ReportedReviewListResponseDto> findAllReportedReviews(Pageable pageable);
 }

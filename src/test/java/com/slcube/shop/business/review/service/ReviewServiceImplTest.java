@@ -2,6 +2,7 @@ package com.slcube.shop.business.review.service;
 
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.repository.ItemRepository;
+import com.slcube.shop.business.review.dto.ReportedReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReportedReviewSaveRequestDto;
 import com.slcube.shop.business.review.dto.ReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
@@ -23,7 +24,6 @@ class ReviewServiceImplTest {
     @Autowired
     private ReviewService reviewService;
 
-    // review를 테스트 해야되는데 item repository가 필요하다 앞으로도 이런일이 많을텐데 mocking이 필요할까..?
     @Autowired
     private ItemRepository itemRepository;
 
@@ -110,6 +110,12 @@ class ReviewServiceImplTest {
         // when
         Long reportedReviewId = reviewService.reportReview(reportedReviewSaveRequestDto);
 
+        // then
+        ReportedReviewResponseDto responseDto = reviewService.findReportedReview(reportedReviewId);
+        assertAll(
+                () -> assertThat(responseDto.getReportedReason()).isEqualTo("test reported review reason"),
+                () -> assertThat(responseDto.getReviewId()).isEqualTo(reviewId)
+        );
     }
 
     private ReviewSaveRequestDto createReview() {

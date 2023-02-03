@@ -8,6 +8,7 @@ import com.slcube.shop.business.review.repository.ReportedReviewRepository;
 import com.slcube.shop.business.review.repository.ReviewRepository;
 import com.slcube.shop.business.review.repository.ReviewRepositoryHelper;
 import com.slcube.shop.business.review.repository.ReviewValidation;
+import com.slcube.shop.common.exception.ReportedReviewNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -63,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewListResponseDto> findReviews(Long itemId, Pageable pageable) {
+    public Page<ReviewListResponseDto> findAllReviews(Long itemId, Pageable pageable) {
         List<ReviewListResponseDto> reviews = reviewRepository.findByItemId(itemId, pageable).stream()
                 .map(ReviewListResponseDto::new)
                 .collect(Collectors.toList());
@@ -81,7 +82,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReportedReviewListResponseDto> findReportedReviews(Pageable pageable) {
+    public ReportedReviewResponseDto findReportedReview(Long reportedReviewId) {
+        ReportedReview reportedReview = reportedReviewRepository.findById(reportedReviewId)
+                .orElseThrow(() -> new ReportedReviewNotFoundException());
+
+        return new ReportedReviewResponseDto(reportedReview);
+    }
+
+    @Override
+    public Page<ReportedReviewListResponseDto> findAllReportedReviews(Pageable pageable) {
         List<ReportedReviewListResponseDto> reportedReviews = reportedReviewRepository.findAll(pageable).stream()
                 .map(ReportedReviewListResponseDto::new)
                 .collect(Collectors.toList());
