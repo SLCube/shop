@@ -14,5 +14,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("select c from Cart c where c.id = :cartId and c.isDeleted = false")
     public Optional<Cart> findByNotDeleted(@Param("cartId") Long cartId);
 
+    @Query("select c from Cart c where c.isDeleted = false")
     public Page<Cart> findAllCarts(Pageable pageable);
 }
