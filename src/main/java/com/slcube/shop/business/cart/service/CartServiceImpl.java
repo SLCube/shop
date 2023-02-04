@@ -43,7 +43,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponseDto findCart(Long cartId) {
-        Cart cart = cartRepositoryHelper.findByDeleted(cartRepository, cartId);
+        Cart cart = cartRepositoryHelper.findByNotDeleted(cartRepository, cartId);
         return new CartResponseDto(cart);
     }
 
@@ -61,7 +61,7 @@ public class CartServiceImpl implements CartService {
     public Long updateCart(CartUpdateRequestDto requestDto) {
         Long cartId = requestDto.getCartId();
         int quantity = requestDto.getQuantity();
-        Cart cart = cartRepositoryHelper.findByDeleted(cartRepository, cartId);
+        Cart cart = cartRepositoryHelper.findByNotDeleted(cartRepository, cartId);
         cart.updateCartItem(quantity);
         return cart.getId();
     }
@@ -69,7 +69,7 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public Long deleteCart(Long cartId) {
-        Cart cart = cartRepositoryHelper.findByDeleted(cartRepository, cartId);
+        Cart cart = cartRepositoryHelper.findByNotDeleted(cartRepository, cartId);
         cart.deleteCartItem();
         return cart.getId();
     }

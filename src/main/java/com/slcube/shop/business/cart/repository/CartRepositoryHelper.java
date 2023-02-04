@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CartRepositoryHelper {
 
-    public Cart findByDeleted(CartRepository cartRepository, Long cartId) {
+    public Cart findByNotDeleted(CartRepository cartRepository, Long cartId) {
         return cartRepository.findByNotDeleted(cartId)
                 .orElseThrow(() -> new CartItemNotFoundException());
     }
