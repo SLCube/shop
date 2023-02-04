@@ -1,6 +1,7 @@
 package com.slcube.shop.business.cart.domain;
 
 import com.slcube.shop.business.item.domain.Item;
+import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.business.member.domain.Member;
 import lombok.AccessLevel;
@@ -30,10 +31,22 @@ public class Cart extends BaseEntity {
     @Column(nullable = false)
     private int quantity = 1;
 
+    @Convert(converter = BooleanToYnConverter.class)
+    @Column(nullable = false)
+    private Boolean isDeleted = Boolean.FALSE;
+
     public static Cart createCartItem(Item item, int quantity) {
         Cart cart = new Cart();
         cart.item = item;
         cart.quantity = quantity;
         return cart;
+    }
+
+    public void deleteCartItem() {
+        this.isDeleted = Boolean.TRUE;
+    }
+
+    public void updateCartItem(int quantity) {
+        this.quantity = quantity;
     }
 }

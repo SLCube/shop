@@ -2,18 +2,16 @@ package com.slcube.shop.business.cart.dto;
 
 import com.slcube.shop.business.cart.domain.Cart;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-public class CartListResponseDto {
+public class CartResponseDto {
 
     private Long cartId;
     private String itemName;
     private int price;
     private int quantity;
 
-    public CartListResponseDto(Cart cart) {
+    public CartResponseDto(Cart cart) {
         cartId = cart.getId();
         itemName = cart.getItem().getItemName();
         price = cart.getItem().getPrice();
