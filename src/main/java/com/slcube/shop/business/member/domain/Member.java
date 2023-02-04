@@ -1,8 +1,6 @@
 package com.slcube.shop.business.member.domain;
 
-import com.slcube.shop.business.cart.domain.Cart;
 import com.slcube.shop.business.address.domain.Address;
-import com.slcube.shop.business.order.domain.Order;
 import com.slcube.shop.business.review.domain.Review;
 import com.slcube.shop.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
@@ -49,12 +47,6 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-    private List<Order> orders = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-    private List<Cart> carts = new ArrayList<>();
 
     @Builder
     private Member(String email, String password, String username) {
