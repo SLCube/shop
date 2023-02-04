@@ -1,7 +1,5 @@
 package com.slcube.shop.business.member.domain;
 
-import com.slcube.shop.business.address.domain.Address;
-import com.slcube.shop.business.review.domain.Review;
 import com.slcube.shop.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,12 +37,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(nullable = false)
     private int point;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-    private List<Address> addresses = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-    private List<Review> reviews = new ArrayList<>();
 
     @Builder
     private Member(String email, String password, String username) {
