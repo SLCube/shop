@@ -53,8 +53,8 @@ public class Member extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
-    private Cart cart;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Cart> carts = new ArrayList<>();
 
     @Builder
     private Member(String email, String password, String username) {

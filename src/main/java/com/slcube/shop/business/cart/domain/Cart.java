@@ -1,5 +1,6 @@
 package com.slcube.shop.business.cart.domain;
 
+import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.business.member.domain.Member;
 import lombok.AccessLevel;
@@ -7,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,10 +19,21 @@ public class Cart extends BaseEntity {
     @Column(name = "cart_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems = new ArrayList<>();
+    @Column(nullable = false)
+    private int quantity = 1;
+
+    public static Cart createCartItem(Item item, int quantity) {
+        Cart cart = new Cart();
+        cart.item = item;
+        cart.quantity = quantity;
+        return cart;
+    }
 }
