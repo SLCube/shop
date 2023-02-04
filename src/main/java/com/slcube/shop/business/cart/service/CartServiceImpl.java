@@ -49,11 +49,14 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Page<CartListResponseDto> findAllCarts(Pageable pageable) {
-        List<CartListResponseDto> result = cartRepository.findAllCarts(pageable).stream()
+        Page<Cart> carts = cartRepository.findAllCarts(pageable);
+
+        List<CartListResponseDto> result = carts.getContent().stream()
                 .map(CartListResponseDto::new)
                 .collect(Collectors.toList());
+        long totalElements = carts.getTotalElements();
 
-        return new PageImpl<>(result, pageable, result.size());
+        return new PageImpl<>(result, pageable, totalElements);
     }
 
     @Override
