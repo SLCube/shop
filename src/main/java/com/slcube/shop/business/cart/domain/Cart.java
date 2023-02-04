@@ -4,14 +4,11 @@ import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.business.member.domain.Member;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Cart extends BaseEntity {
 
@@ -29,11 +26,15 @@ public class Cart extends BaseEntity {
     private Member member;
 
     @Column(nullable = false)
-    private int quantity = 1;
+    private int quantity;
 
     @Convert(converter = BooleanToYnConverter.class)
     @Column(nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
+
+    protected Cart() {
+        this.quantity = 1;
+    }
 
     public static Cart createCartItem(Item item, int quantity) {
         Cart cart = new Cart();
