@@ -16,6 +16,7 @@ public enum CustomErrorCode {
     DISABLED_MEMBER(FORBIDDEN, "비활성화된 계정입니다."),
     REVIEWS_NOT_FOUND(NOT_FOUND, "리뷰 정보를 찾을 수 없습니다."),
     REPORTED_REVIEWS_NOT_FOUND(NOT_FOUND, "신고된 리뷰 정보를 찾을 수 없습니다."),
+    CART_ITEMS_NOT_FOUND(NOT_FOUND, "장바구니의 상품 정보를 찾을 수 없습니다."),
     CATEGORIES_NOT_FOUND(NOT_FOUND, "카테고리 정보를 찾을 수 없습니다."),
 
     ITEMS_NOT_FOUND(NOT_FOUND, "상품 정보를 찾을 수 없습니다."),

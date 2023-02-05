@@ -1,0 +1,98 @@
+package com.slcube.shop.business.cart.service;
+
+import com.slcube.shop.business.cart.dto.CartResponseDto;
+import com.slcube.shop.business.cart.dto.CartSaveRequestDto;
+import com.slcube.shop.business.cart.dto.CartUpdateRequestDto;
+import com.slcube.shop.business.item.domain.Item;
+import com.slcube.shop.business.item.repository.ItemRepository;
+import com.slcube.shop.common.exception.CartItemNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@Transactional
+class CartServiceImplTest {
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private ItemRepository itemRepository;
+
+    private Long itemId;
+
+    @BeforeEach
+    void beforeEach() {
+        Item item = Item.builder()
+                .itemName("test item name")
+                .price(10000)
+                .stockQuantity(10)
+                .build();
+
+        itemId = itemRepository.save(item).getId();
+    }
+
+    @Test
+    @DisplayName("장바구니에 상품 저장")
+    void saveTest() {
+        Long cartId = saveCart();
+
+        CartResponseDto responseDto = cartService.findCart(cartId);
+
+        assertAll(
+                () -> assertThat(responseDto.getPrice()).isEqualTo(10000),
+                () -> assertThat(responseDto.getItemName()).isEqualTo("test item name"),
+                () -> assertThat(responseDto.getQuantity()).isEqualTo(5)
+        );
+    }
+
+    @Test
+    @DisplayName("장바구니에 저장된 상품 갯수 수정")
+    void updateTest() {
+        Long cartId = saveCart();
+
+        CartUpdateRequestDto requestDto = new CartUpdateRequestDto();
+        requestDto.setCartId(cartId);
+        requestDto.setQuantity(15);
+
+        Long updatedCartId = cartService.updateCart(requestDto);
+
+        CartResponseDto cart = cartService.findCart(updatedCartId);
+
+        assertAll(
+                () -> assertThat(cart.getQuantity()).isEqualTo(15),
+                () -> assertThat(cart.getPrice()).isEqualTo(10000),
+                () -> assertThat(cart.getItemName()).isEqualTo("test item name")
+        );
+    }
+
+    @Test
+    @DisplayName("장바구니에 저장된 상품 삭제")
+    void deleteTest() {
+        Long cartId = saveCart();
+
+        Long deletedId = cartService.deleteCart(cartId);
+
+        assertThrows(CartItemNotFoundException.class,
+                () -> cartService.deleteCart(deletedId));
+    }
+
+    private CartSaveRequestDto createCartItem() {
+        CartSaveRequestDto requestDto = new CartSaveRequestDto();
+        requestDto.setItemId(itemId);
+        requestDto.setQuantity(5);
+        return requestDto;
+    }
+
+    private Long saveCart() {
+        CartSaveRequestDto requestDto = createCartItem();
+        return cartService.saveCart(requestDto);
+    }
+}

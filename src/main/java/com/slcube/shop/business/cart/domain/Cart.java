@@ -1,17 +1,14 @@
 package com.slcube.shop.business.cart.domain;
 
+import com.slcube.shop.business.item.domain.Item;
+import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.business.member.domain.Member;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Cart extends BaseEntity {
 
@@ -20,10 +17,40 @@ public class Cart extends BaseEntity {
     @Column(name = "cart_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems = new ArrayList<>();
+    @Column(nullable = false)
+    private int quantity;
+
+    @Convert(converter = BooleanToYnConverter.class)
+    @Column(nullable = false)
+    private Boolean isDeleted = Boolean.FALSE;
+
+    protected Cart() {
+        this.quantity = 1;
+    }
+
+    private Cart(Item item, int quantity) {
+        this.item = item;
+        this.quantity = quantity;
+    }
+
+    public static Cart createCartItem(Item item, int quantity) {
+        Cart cart = new Cart(item, quantity);
+        return cart;
+    }
+
+    public void deleteCartItem() {
+        this.isDeleted = Boolean.TRUE;
+    }
+
+    public void updateCartItem(int quantity) {
+        this.quantity = quantity;
+    }
 }
