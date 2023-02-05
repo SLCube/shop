@@ -12,13 +12,9 @@ import com.slcube.shop.business.item.repository.ItemRepository;
 import com.slcube.shop.business.item.repository.ItemRepositoryHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -49,14 +45,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Page<CartListResponseDto> findAllCarts(Pageable pageable) {
-        Page<Cart> carts = cartRepository.findAllCarts(pageable);
-
-        List<CartListResponseDto> result = carts.getContent().stream()
-                .map(CartListResponseDto::new)
-                .collect(Collectors.toList());
-        long totalElements = carts.getTotalElements();
-
-        return new PageImpl<>(result, pageable, totalElements);
+        return cartRepository.findAllCarts(pageable)
+                .map(CartListResponseDto::new);
     }
 
     @Override
