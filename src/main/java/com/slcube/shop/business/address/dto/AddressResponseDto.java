@@ -19,6 +19,7 @@ public class AddressResponseDto {
         addressId = address.getId();
         city = address.getCity();
         zipcode = address.getZipcode();
+        street = address.getStreet();
         comment = address.getComment();
         isDefaultAddress = address.isDefaultAddress();
     }
