@@ -39,12 +39,13 @@ public class Address {
     private Member member;
 
     @Builder
-    private Address(String city, String zipcode, String street, String comment, boolean isDefaultAddress) {
+    private Address(String city, String zipcode, String street, String comment, boolean isDefaultAddress, Member member) {
         this.city = city;
         this.zipcode = zipcode;
         this.street = street;
         this.comment = comment;
         this.isDefaultAddress = isDefaultAddress;
+        this.member = member;
     }
 
     public void updateAddress(String city, String zipcode, String street, String comment, boolean isDefaultAddress) {
