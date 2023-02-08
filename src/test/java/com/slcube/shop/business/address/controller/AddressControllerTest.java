@@ -2,6 +2,7 @@ package com.slcube.shop.business.address.controller;
 
 import com.slcube.shop.business.address.dto.AddressResponseDto;
 import com.slcube.shop.business.address.dto.AddressSaveRequestDto;
+import com.slcube.shop.business.address.dto.AddressUpdateRequestDto;
 import com.slcube.shop.business.address.service.AddressService;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.DisplayName;
@@ -64,5 +65,24 @@ class AddressControllerTest {
                 .andExpect(jsonPath("$.zipcode").value("test zipcode"))
                 .andExpect(jsonPath("$.street").value("test street"))
                 .andExpect(jsonPath("$.defaultAddress").value(true));
+    }
+
+    @Test
+    @DisplayName("주소 정보 수정")
+    void updateAddressTest() throws Exception {
+        Long addressId = 1L;
+        AddressUpdateRequestDto requestDto = new AddressUpdateRequestDto();
+        requestDto.setCity("update test city");
+        requestDto.setZipcode("update test zipcode");
+        requestDto.setStreet("update test street");
+        requestDto.setDefaultAddress(false);
+        requestDto.setComment("update test comment");
+
+        given(addressService.updateAddress(eq(addressId), eq(requestDto), any()))
+                .willReturn(addressId);
+
+        mockMvc.perform(patch("/api/address/" + addressId)
+                        .with(csrf()))
+                .andExpect(status().isOk());
     }
 }
