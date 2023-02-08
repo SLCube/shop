@@ -2,8 +2,10 @@ package com.slcube.shop.business.address.service;
 
 import com.slcube.shop.business.address.dto.AddressResponseDto;
 import com.slcube.shop.business.address.dto.AddressSaveRequestDto;
+import com.slcube.shop.business.address.dto.AddressUpdateRequestDto;
 import com.slcube.shop.business.member.domain.Member;
 import com.slcube.shop.business.member.repository.MemberRepository;
+import com.slcube.shop.common.exception.AddressNotFoundException;
 import com.slcube.shop.common.exception.AddressNotRegisterAnymore;
 import com.slcube.shop.common.security.WithMockMember;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
@@ -40,12 +42,7 @@ class AddressServiceTest {
     @Test
     @DisplayName("배송지 저장")
     void saveAddressTest() {
-        AddressSaveRequestDto requestDto = new AddressSaveRequestDto();
-        requestDto.setDefaultAddress(true);
-        requestDto.setCity("test city");
-        requestDto.setZipcode("test zipcode");
-        requestDto.setStreet("test street");
-        requestDto.setComment("test comment");
+        AddressSaveRequestDto requestDto = createAddress();
 
         Long saveId = addressService.saveAddress(requestDto, member);
         AddressResponseDto findAddress = addressService.findAddress(saveId, member);
@@ -84,12 +81,49 @@ class AddressServiceTest {
     @Test
     @DisplayName("배송지 수정")
     void updateAddressTest() {
+        AddressSaveRequestDto addressSaveRequestDto = createAddress();
 
+        Long addressId = addressService.saveAddress(addressSaveRequestDto, member);
+
+        AddressUpdateRequestDto addressUpdateRequestDto = new AddressUpdateRequestDto();
+
+        addressUpdateRequestDto.setCity("update test city");
+        addressUpdateRequestDto.setZipcode("update test zipcode");
+        addressUpdateRequestDto.setStreet("update test street");
+        addressUpdateRequestDto.setComment("update test comment");
+        addressUpdateRequestDto.setDefaultAddress(false);
+
+        Long updateAddressId = addressService.updateAddress(addressId, addressUpdateRequestDto, member);
+
+        AddressResponseDto address = addressService.findAddress(updateAddressId, member);
+        assertAll(
+                () -> assertThat(address.getCity()).isEqualTo("update test city"),
+                () -> assertThat(address.getZipcode()).isEqualTo("update test zipcode"),
+                () -> assertThat(address.getStreet()).isEqualTo("update test street"),
+                () -> assertThat(address.getComment()).isEqualTo("update test comment"),
+                () -> assertThat(address.isDefaultAddress()).isEqualTo(false)
+        );
     }
 
     @Test
     @DisplayName("배송지 삭제")
     void deleteAddressTest() {
+        AddressSaveRequestDto addressSaveRequestDto = createAddress();
+        Long addressId = addressService.saveAddress(addressSaveRequestDto, member);
 
+        Long deletedAddressId = addressService.deleteAddress(addressId, member);
+
+        assertThrows(AddressNotFoundException.class,
+                () -> addressService.findAddress(deletedAddressId, member));
+    }
+
+    private static AddressSaveRequestDto createAddress() {
+        AddressSaveRequestDto requestDto = new AddressSaveRequestDto();
+        requestDto.setDefaultAddress(true);
+        requestDto.setCity("test city");
+        requestDto.setZipcode("test zipcode");
+        requestDto.setStreet("test street");
+        requestDto.setComment("test comment");
+        return requestDto;
     }
 }
