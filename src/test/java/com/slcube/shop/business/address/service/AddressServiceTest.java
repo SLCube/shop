@@ -6,6 +6,7 @@ import com.slcube.shop.business.member.domain.Member;
 import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.common.exception.AddressNotRegisterAnymore;
 import com.slcube.shop.common.security.WithMockMember;
+import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,8 @@ class AddressServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        MemberContext memberContext = (MemberContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        member = memberContext.getMember();
         memberRepository.save(member);
     }
 
