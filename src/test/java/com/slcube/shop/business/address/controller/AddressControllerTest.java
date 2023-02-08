@@ -85,4 +85,17 @@ class AddressControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @DisplayName("주소 정보 삭제")
+    void deleteAddressTest() throws Exception {
+        Long addressId = 1L;
+
+        given(addressService.deleteAddress(eq(addressId), any()))
+                .willReturn(addressId);
+
+        mockMvc.perform(delete("/api/address/" + addressId)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+    }
 }
