@@ -1,5 +1,6 @@
 package com.slcube.shop.business.address.controller;
 
+import com.slcube.shop.business.address.dto.AddressResponseDto;
 import com.slcube.shop.business.address.dto.AddressSaveRequestDto;
 import com.slcube.shop.business.address.service.AddressService;
 import com.slcube.shop.common.security.WithMockMember;
@@ -41,5 +42,27 @@ class AddressControllerTest {
         mockMvc.perform(post("/api/address")
                         .with(csrf()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("주소 단건 조회")
+    void findAddressTest() throws Exception {
+        AddressResponseDto responseDto = new AddressResponseDto();
+        responseDto.setAddressId(1L);
+        responseDto.setDefaultAddress(true);
+        responseDto.setCity("test city");
+        responseDto.setZipcode("test zipcode");
+        responseDto.setStreet("test street");
+
+        given(addressService.findAddress(any(), any()))
+                .willReturn(responseDto);
+
+        mockMvc.perform(get("/api/address/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.addressId").value(1L))
+                .andExpect(jsonPath("$.city").value("test city"))
+                .andExpect(jsonPath("$.zipcode").value("test zipcode"))
+                .andExpect(jsonPath("$.street").value("test street"))
+                .andExpect(jsonPath("$.defaultAddress").value(true));
     }
 }

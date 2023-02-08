@@ -2,10 +2,12 @@ package com.slcube.shop.business.address.dto;
 
 import com.slcube.shop.business.address.domain.Address;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class AddressResponseDto {
 
     private Long addressId;
