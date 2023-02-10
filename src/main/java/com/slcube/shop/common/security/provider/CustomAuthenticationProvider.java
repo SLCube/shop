@@ -28,7 +28,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("비밀번호가 틀렸습니다.");
         }
 
-        return new AuthenticationToken(memberContext.getMember(), memberContext.getPassword(), memberContext.getAuthorities());
+        return new AuthenticationToken(memberContext, memberContext.getPassword(), memberContext.getAuthorities());
     }
 
     @Override
