@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface DeliveryService {
 
-    public Long saveDelivery(DeliverySaveRequestDto requestDto);
+    Long saveDelivery(DeliverySaveRequestDto requestDto);
 
-    public DeliveryResponseDto findDelivery(Long orderId);
+    DeliveryResponseDto findDelivery(Long orderId);
 
-    public Long updateDeliveryStatus(DeliveryUpdateRequestDto requestDto);
+    Long updateDeliveryStatus(DeliveryUpdateRequestDto requestDto);
 }

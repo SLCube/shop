@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface CartService {
 
-    public Long saveCart(CartSaveRequestDto requestDto);
-    public CartResponseDto findCart(Long cartId);
-    public Page<CartListResponseDto> findAllCarts(Pageable pageable);
-    public Long updateCart(CartUpdateRequestDto requestDto);
-    public Long deleteCart(Long cartId);
+    Long saveCart(CartSaveRequestDto requestDto);
+    CartResponseDto findCart(Long cartId);
+    Page<CartListResponseDto> findAllCarts(Pageable pageable);
+    Long updateCart(CartUpdateRequestDto requestDto);
+    Long deleteCart(Long cartId);
 }
