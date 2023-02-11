@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static com.slcube.shop.business.member.domain.MemberStatus.*;
+
 @Component
 public class LoginUserAuditorAware implements AuditorAware<String> {
 
@@ -17,6 +19,11 @@ public class LoginUserAuditorAware implements AuditorAware<String> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
+        }
+
+
+        if (authentication.getPrincipal().equals(ANONYMOUS_USER.getMemberStatus())) {
+            return Optional.ofNullable(ANONYMOUS_USER.getMemberStatus());
         }
 
         MemberContext memberContext = (MemberContext) authentication.getPrincipal();
