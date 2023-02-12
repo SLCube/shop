@@ -1,6 +1,7 @@
 package com.slcube.shop.business.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slcube.shop.business.member.dto.MemberChangePasswordRequestDto;
 import com.slcube.shop.business.member.dto.MemberSignUpRequestDto;
 import com.slcube.shop.business.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberController.class)
@@ -47,5 +49,25 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsBytes(requestDto))
                         .characterEncoding(UTF_8))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경")
+    void changePasswordTest() throws Exception {
+        MemberChangePasswordRequestDto requestDto = new MemberChangePasswordRequestDto();
+        requestDto.setEmail("test@naver.com");
+        requestDto.setCurrentPassword("test password");
+        requestDto.setChangedPassword("test change password");
+
+        given(memberService.changePassword(eq(requestDto)))
+                .willReturn(1L);
+
+        mockMvc.perform(patch("/api/members")
+                        .with(csrf())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(requestDto))
+                        .characterEncoding(UTF_8))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }
