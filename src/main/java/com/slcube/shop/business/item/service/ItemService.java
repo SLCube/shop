@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public interface ItemService {
 
     Long saveItem(ItemSaveRequestDto requestDto);
-    Long updateItem(ItemUpdateRequestDto requestDto);
+    Long updateItem(Long itemId, ItemUpdateRequestDto requestDto);
     Long deleteItem(Long itemId);
     ItemResponseDto findItem(Long itemId);
     Page<ItemListResponseDto> findItems(Long categoryId, Pageable pageable);
