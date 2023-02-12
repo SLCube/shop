@@ -1,6 +1,7 @@
 package com.slcube.shop.business.item.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slcube.shop.business.item.dto.ItemListResponseDto;
 import com.slcube.shop.business.item.dto.ItemResponseDto;
 import com.slcube.shop.business.item.dto.ItemSaveRequestDto;
 import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
@@ -10,9 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -68,6 +77,38 @@ class ItemControllerTest {
         mockMvc.perform(get("/api/items/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(itemResponseDto)))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 다건 조회")
+    void findAllItemsTest() throws Exception {
+        List<ItemListResponseDto> result = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 10);
+
+        for (int i = 1; i <= 3; i++) {
+            ItemListResponseDto response = new ItemListResponseDto((long) i, "item" + i + " name", 10000 * i);
+            result.add(response);
+        }
+
+        PageImpl<ItemListResponseDto> itemListResponseDtos = new PageImpl<>(result, pageable, result.size());
+
+        Long categoryId = 1L;
+
+        given(itemService.findItems(categoryId, pageable))
+                .willReturn(itemListResponseDtos);
+
+        MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
+        requestParam.set("categoryId", categoryId.toString());
+        requestParam.set("page", "0");
+        requestParam.set("size", "10");
+
+        mockMvc.perform(get("/api/items?categoryId=1")
+                        .with(csrf())
+                        .params(requestParam))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().json(objectMapper.writeValueAsString(itemListResponseDtos)))
                 .andDo(print());
     }
 
