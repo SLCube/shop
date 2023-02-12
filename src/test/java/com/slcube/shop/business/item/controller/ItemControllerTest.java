@@ -3,6 +3,7 @@ package com.slcube.shop.business.item.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.item.dto.ItemResponseDto;
 import com.slcube.shop.business.item.dto.ItemSaveRequestDto;
+import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
 import com.slcube.shop.business.item.service.ItemService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,6 +69,30 @@ class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(itemResponseDto)))
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 수정")
+    void updateItemTest() throws Exception {
+        ItemUpdateRequestDto requestDto = new ItemUpdateRequestDto();
+
+        requestDto.setCategoryId(1L);
+        requestDto.setPrice(15000);
+        requestDto.setItemName("item update name");
+        requestDto.setStockQuantity(20);
+
+        Long itemId = 1L;
+
+        given(itemService.updateItem(itemId, requestDto))
+                .willReturn(itemId);
+
+        mockMvc.perform(patch("/api/items/" + 1L)
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
     }
 
     @Test

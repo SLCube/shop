@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class ItemUpdateRequestDto {
 
-    private Long itemId;
     private Long categoryId;
     private String itemName;
     private int price;
