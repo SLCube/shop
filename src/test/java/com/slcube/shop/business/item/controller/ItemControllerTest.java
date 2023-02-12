@@ -1,6 +1,7 @@
 package com.slcube.shop.business.item.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slcube.shop.business.item.dto.ItemResponseDto;
 import com.slcube.shop.business.item.dto.ItemSaveRequestDto;
 import com.slcube.shop.business.item.service.ItemService;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ItemController.class)
@@ -48,5 +50,23 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsBytes(requestDto)))
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    @DisplayName("상품 단건 조회")
+    void findItemTest() throws Exception {
+        ItemResponseDto itemResponseDto = ItemResponseDto.builder()
+                .itemId(1L)
+                .itemName("test item")
+                .price(10000)
+                .build();
+
+        given(itemService.findItem(1L))
+                .willReturn(itemResponseDto);
+
+        mockMvc.perform(get("/api/items/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(itemResponseDto)))
+                .andDo(print());
     }
 }
