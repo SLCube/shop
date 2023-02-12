@@ -74,10 +74,9 @@ class CartServiceImplTest {
         Long cartId = saveCart();
 
         CartUpdateRequestDto requestDto = new CartUpdateRequestDto();
-        requestDto.setCartId(cartId);
         requestDto.setQuantity(15);
 
-        Long updatedCartId = cartService.updateCart(requestDto);
+        Long updatedCartId = cartService.updateCart(cartId, requestDto);
 
         CartResponseDto cart = cartService.findCart(updatedCartId);
 

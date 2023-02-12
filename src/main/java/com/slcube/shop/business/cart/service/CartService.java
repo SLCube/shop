@@ -15,6 +15,6 @@ public interface CartService {
     Long saveCart(CartSaveRequestDto requestDto, Member member);
     CartResponseDto findCart(Long cartId);
     Page<CartListResponseDto> findAllCarts(Pageable pageable);
-    Long updateCart(CartUpdateRequestDto requestDto);
+    Long updateCart(Long cartId, CartUpdateRequestDto requestDto);
     Long deleteCart(Long cartId);
 }

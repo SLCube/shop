@@ -53,8 +53,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public Long updateCart(CartUpdateRequestDto requestDto) {
-        Long cartId = requestDto.getCartId();
+    public Long updateCart(Long cartId, CartUpdateRequestDto requestDto) {
         int quantity = requestDto.getQuantity();
 
         Cart cart = cartRepositoryHelper.findByNotDeleted(cartRepository, cartId);
