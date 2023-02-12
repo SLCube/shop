@@ -7,6 +7,8 @@ import com.slcube.shop.business.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/items")
 @RequiredArgsConstructor
@@ -15,7 +17,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Long saveItem(@RequestBody ItemSaveRequestDto requestDto) {
+    public Long saveItem(@RequestBody @Valid ItemSaveRequestDto requestDto) {
         return itemService.saveItem(requestDto);
     }
 
@@ -25,7 +27,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public Long updateItem(@PathVariable Long itemId, @RequestBody ItemUpdateRequestDto requestDto) {
+    public Long updateItem(@PathVariable Long itemId, @RequestBody @Valid ItemUpdateRequestDto requestDto) {
         return itemService.updateItem(itemId, requestDto);
     }
 
