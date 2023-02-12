@@ -2,6 +2,7 @@ package com.slcube.shop.business.cart.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.cart.dto.CartSaveRequestDto;
+import com.slcube.shop.business.cart.dto.CartUpdateRequestDto;
 import com.slcube.shop.business.cart.service.CartService;
 import com.slcube.shop.common.security.WithMockMember;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
@@ -19,6 +20,7 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CartController.class)
@@ -56,5 +58,24 @@ class CartControllerTest {
                         .contentType(APPLICATION_JSON)
                         .characterEncoding(UTF_8))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("장바구니 상품 수량 수정")
+    void updateCartTest() throws Exception {
+        Long cartId = 1L;
+
+        CartUpdateRequestDto requestDto = new CartUpdateRequestDto();
+        requestDto.setQuantity(15);
+
+        given(cartService.updateCart(cartId, requestDto))
+                .willReturn(cartId);
+
+        mockMvc.perform(patch("/api/carts/" + cartId)
+                        .with(csrf())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }
