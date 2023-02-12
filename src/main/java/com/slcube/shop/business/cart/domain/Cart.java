@@ -36,13 +36,14 @@ public class Cart extends BaseEntity {
         this.quantity = 1;
     }
 
-    private Cart(Item item, int quantity) {
+    private Cart(Item item, int quantity, Member member) {
         this.item = item;
         this.quantity = quantity;
+        this.member = member;
     }
 
-    public static Cart createCartItem(Item item, int quantity) {
-        Cart cart = new Cart(item, quantity);
+    public static Cart createCartItem(Item item, int quantity, Member member) {
+        Cart cart = new Cart(item, quantity, member);
         return cart;
     }
 

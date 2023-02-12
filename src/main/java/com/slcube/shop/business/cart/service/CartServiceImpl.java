@@ -10,6 +10,7 @@ import com.slcube.shop.business.cart.repository.CartRepositoryHelper;
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.repository.ItemRepository;
 import com.slcube.shop.business.item.repository.ItemRepositoryHelper;
+import com.slcube.shop.business.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,12 +29,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public Long saveCart(CartSaveRequestDto requestDto) {
-
+    public Long saveCart(CartSaveRequestDto requestDto, Member member) {
         Long itemId = requestDto.getItemId();
         int quantity = requestDto.getQuantity();
+
         Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
-        Cart cart = Cart.createCartItem(item, quantity);
+        Cart cart = Cart.createCartItem(item, quantity, member);
+
         return cartRepository.save(cart).getId();
     }
 
@@ -54,8 +56,10 @@ public class CartServiceImpl implements CartService {
     public Long updateCart(CartUpdateRequestDto requestDto) {
         Long cartId = requestDto.getCartId();
         int quantity = requestDto.getQuantity();
+
         Cart cart = cartRepositoryHelper.findByNotDeleted(cartRepository, cartId);
         cart.updateCartItem(quantity);
+
         return cart.getId();
     }
 
@@ -64,6 +68,7 @@ public class CartServiceImpl implements CartService {
     public Long deleteCart(Long cartId) {
         Cart cart = cartRepositoryHelper.findByNotDeleted(cartRepository, cartId);
         cart.deleteCartItem();
+
         return cart.getId();
     }
 }
