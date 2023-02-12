@@ -1,0 +1,52 @@
+package com.slcube.shop.business.item.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slcube.shop.business.item.dto.ItemSaveRequestDto;
+import com.slcube.shop.business.item.service.ItemService;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.BDDMockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(ItemController.class)
+@WithMockUser
+class ItemControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ItemService itemService;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    @Test
+    @DisplayName("상품 저장")
+    void saveItemTest() throws Exception {
+        Long itemId = 1L;
+        ItemSaveRequestDto requestDto = new ItemSaveRequestDto();
+        requestDto.setItemName("test item");
+        requestDto.setPrice(10000);
+        requestDto.setCategoryId(1L);
+        requestDto.setStockQuantity(10);
+
+        given(itemService.saveItem(requestDto))
+                .willReturn(itemId);
+
+        mockMvc.perform(post("/api/items")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(requestDto)))
+                .andExpect(status().isOk());
+
+    }
+}
