@@ -22,4 +22,9 @@ public class ItemController {
     public ItemResponseDto findItem(@PathVariable Long itemId) {
         return itemService.findItem(itemId);
     }
+
+    @DeleteMapping("/{itemId}")
+    public Long deleteItem(@PathVariable Long itemId) {
+        return itemService.deleteItem(itemId);
+    }
 }

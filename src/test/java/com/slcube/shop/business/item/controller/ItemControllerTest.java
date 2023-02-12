@@ -69,4 +69,19 @@ class ItemControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(itemResponseDto)))
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("상품 삭제")
+    void deleteItemTest() throws Exception {
+        Long itemId = 1L;
+
+        given(itemService.deleteItem(itemId))
+                .willReturn(itemId);
+
+        mockMvc.perform(delete("/api/items/" + itemId)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(itemId.toString()))
+                .andDo(print());
+    }
 }
