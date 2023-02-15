@@ -46,8 +46,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Page<CartListResponseDto> findAllCarts(Pageable pageable) {
-        return cartRepository.findAllCarts(pageable)
+    public Page<CartListResponseDto> findAllCarts(Member member, Pageable pageable) {
+        return cartRepository.findAllCarts(member, pageable)
                 .map(CartListResponseDto::new);
     }
 
