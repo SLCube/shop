@@ -34,4 +34,9 @@ public class CartController {
     public Long updateCart(@PathVariable Long cartId, @RequestBody @Valid CartUpdateRequestDto requestDto) {
         return cartService.updateCart(cartId, requestDto);
     }
+
+    @DeleteMapping("/{cartId}")
+    public Long deleteCart(@PathVariable Long cartId) {
+        return cartService.deleteCart(cartId);
+    }
 }

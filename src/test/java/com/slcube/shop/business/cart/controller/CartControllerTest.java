@@ -117,4 +117,19 @@ class CartControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("장바구니 상품 삭제")
+    void deleteCartTest() throws Exception {
+        Long cartId = 1L;
+
+        given(cartService.deleteCart(cartId))
+                .willReturn(cartId);
+
+        mockMvc.perform(delete("/api/carts/" + cartId)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(cartId.toString()))
+                .andDo(print());
+    }
 }
