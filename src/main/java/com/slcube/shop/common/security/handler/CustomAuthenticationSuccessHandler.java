@@ -2,6 +2,7 @@ package com.slcube.shop.common.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberResponseDto;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +28,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        objectMapper.writeValue(response.getWriter(), member);
+        objectMapper.writeValue(response.getWriter(), new MemberResponseDto(member));
     }
 }
