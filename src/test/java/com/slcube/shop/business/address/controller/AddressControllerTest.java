@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.*;
@@ -37,12 +38,21 @@ class AddressControllerTest {
     void saveAddressTest() throws Exception {
         Long addressId = 1L;
 
+        AddressSaveRequestDto requestDto = new AddressSaveRequestDto();
+        requestDto.setCity("test city");
+        requestDto.setZipcode("test zipcode");
+        requestDto.setStreet("test street");
+        requestDto.setDefaultAddress(true);
+        requestDto.setComment("test comment");
+
         given(addressService.saveAddress(any(AddressSaveRequestDto.class), any(Member.class)))
                 .willReturn(addressId);
 
 
         mockMvc.perform(post("/api/address")
-                        .with(csrf())                )
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(addressId.toString()))
                 .andDo(print());
@@ -76,10 +86,19 @@ class AddressControllerTest {
     void updateAddressTest() throws Exception {
         Long addressId = 1L;
 
+        AddressUpdateRequestDto requestDto = new AddressUpdateRequestDto();
+        requestDto.setDefaultAddress(true);
+        requestDto.setCity("test update city");
+        requestDto.setStreet("test update street");
+        requestDto.setZipcode("test update zipcode");
+        requestDto.setComment("test update comment");
+
         given(addressService.updateAddress(anyLong(), any(AddressUpdateRequestDto.class), any(Member.class)))
                 .willReturn(addressId);
 
         mockMvc.perform(patch("/api/address/" + addressId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto))
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(addressId.toString()))
