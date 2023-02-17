@@ -5,9 +5,8 @@ import com.slcube.shop.business.cart.dto.CartListResponseDto;
 import com.slcube.shop.business.cart.dto.CartSaveRequestDto;
 import com.slcube.shop.business.cart.dto.CartUpdateRequestDto;
 import com.slcube.shop.business.cart.service.CartService;
+import com.slcube.shop.business.member.domain.Member;
 import com.slcube.shop.common.security.WithMockMember;
-import com.slcube.shop.common.security.authenticationContext.MemberContext;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,7 +22,6 @@ import org.springframework.util.MultiValueMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -44,29 +41,25 @@ class CartControllerTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private MemberContext memberContext;
-
-    @BeforeEach
-    void setUp() {
-        memberContext = (MemberContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
     @Test
     @DisplayName("장바구니 저장")
     void saveCartTest() throws Exception {
+        Long cartId = 1L;
+
         CartSaveRequestDto requestDto = new CartSaveRequestDto();
         requestDto.setItemId(1L);
         requestDto.setQuantity(10);
 
-        given(cartService.saveCart(requestDto, memberContext.getMember()))
-                .willReturn(1L);
+        given(cartService.saveCart(any(CartSaveRequestDto.class), any(Member.class)))
+                .willReturn(cartId);
 
         mockMvc.perform(post("/api/carts")
-                        .with(csrf())
-                        .content(objectMapper.writeValueAsString(requestDto))
                         .contentType(APPLICATION_JSON)
-                        .characterEncoding(UTF_8))
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .with(csrf()))
                 .andExpect(status().isOk())
+                .andExpect(content().json(cartId.toString()))
+                .andExpect(content().json(cartId.toString()))
                 .andDo(print());
     }
 
@@ -83,7 +76,7 @@ class CartControllerTest {
 
         PageImpl<CartListResponseDto> result = new PageImpl<>(carts, pageable, carts.size());
 
-        given(cartService.findAllCarts(memberContext.getMember(), pageable))
+        given(cartService.findAllCarts(any(Member.class), any(Pageable.class)))
                 .willReturn(result);
 
         MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
@@ -107,14 +100,15 @@ class CartControllerTest {
         CartUpdateRequestDto requestDto = new CartUpdateRequestDto();
         requestDto.setQuantity(15);
 
-        given(cartService.updateCart(cartId, requestDto))
+        given(cartService.updateCart(anyLong(), any(CartUpdateRequestDto.class)))
                 .willReturn(cartId);
 
         mockMvc.perform(patch("/api/carts/" + cartId)
-                        .with(csrf())
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .with(csrf()))
                 .andExpect(status().isOk())
+                .andExpect(content().json(cartId.toString()))
                 .andDo(print());
     }
 
