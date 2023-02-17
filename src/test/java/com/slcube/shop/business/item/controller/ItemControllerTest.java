@@ -51,14 +51,16 @@ class ItemControllerTest {
         requestDto.setCategoryId(1L);
         requestDto.setStockQuantity(10);
 
-        given(itemService.saveItem(requestDto))
+        given(itemService.saveItem(any(ItemSaveRequestDto.class)))
                 .willReturn(itemId);
 
         mockMvc.perform(post("/api/items")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(itemId.toString()))
+                .andDo(print());
 
     }
 
@@ -71,7 +73,7 @@ class ItemControllerTest {
                 .price(10000)
                 .build();
 
-        given(itemService.findItem(1L))
+        given(itemService.findItem(anyLong()))
                 .willReturn(itemResponseDto);
 
         mockMvc.perform(get("/api/items/1"))
@@ -95,7 +97,7 @@ class ItemControllerTest {
 
         Long categoryId = 1L;
 
-        given(itemService.findItems(categoryId, pageable))
+        given(itemService.findItems(anyLong(), any(Pageable.class)))
                 .willReturn(itemListResponseDtos);
 
         MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
@@ -124,7 +126,7 @@ class ItemControllerTest {
 
         Long itemId = 1L;
 
-        given(itemService.updateItem(itemId, requestDto))
+        given(itemService.updateItem(eq(itemId), any(ItemUpdateRequestDto.class)))
                 .willReturn(itemId);
 
         mockMvc.perform(patch("/api/items/" + 1L)
@@ -132,6 +134,7 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
+                .andExpect(content().json(itemId.toString()))
                 .andDo(print());
 
     }
