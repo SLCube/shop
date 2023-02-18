@@ -40,15 +40,18 @@ class MemberControllerTest {
         requestDto.setEmail("test@naver.com");
         requestDto.setPassword("test password");
 
-        given(memberService.signUp(eq(requestDto)))
-                .willReturn(1L);
+        Long memberId = 1L;
+        given(memberService.signUp(any(MemberSignUpRequestDto.class)))
+                .willReturn(memberId);
 
         mockMvc.perform(post("/api/members")
                         .with(csrf())
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestDto))
                         .characterEncoding(UTF_8))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(memberId.toString()))
+                .andDo(print());
     }
 
     @Test
@@ -59,8 +62,9 @@ class MemberControllerTest {
         requestDto.setCurrentPassword("test password");
         requestDto.setChangedPassword("test change password");
 
-        given(memberService.changePassword(eq(requestDto)))
-                .willReturn(1L);
+        Long memberId = 1L;
+        given(memberService.changePassword(any(MemberChangePasswordRequestDto.class)))
+                .willReturn(memberId);
 
         mockMvc.perform(patch("/api/members")
                         .with(csrf())
@@ -68,6 +72,7 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsBytes(requestDto))
                         .characterEncoding(UTF_8))
                 .andExpect(status().isOk())
+                .andExpect(content().json(memberId.toString()))
                 .andDo(print());
     }
 }
