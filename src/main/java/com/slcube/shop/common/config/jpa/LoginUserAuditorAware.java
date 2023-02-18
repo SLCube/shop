@@ -23,7 +23,7 @@ public class LoginUserAuditorAware implements AuditorAware<String> {
 
 
         if (authentication.getPrincipal().equals(ANONYMOUS_USER.getMemberStatus())) {
-            return Optional.ofNullable(ANONYMOUS_USER.getMemberStatus());
+            return Optional.of(ANONYMOUS_USER.getMemberStatus());
         }
 
         MemberContext memberContext = (MemberContext) authentication.getPrincipal();
