@@ -32,7 +32,7 @@ public class Address {
 
     @Column(nullable = false)
     @Convert(converter = BooleanToYnConverter.class)
-    private boolean isDefaultAddress;
+    private Boolean isDefaultAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

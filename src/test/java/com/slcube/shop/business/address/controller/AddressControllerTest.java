@@ -42,7 +42,7 @@ class AddressControllerTest {
         requestDto.setCity("test city");
         requestDto.setZipcode("test zipcode");
         requestDto.setStreet("test street");
-        requestDto.setDefaultAddress(true);
+        requestDto.setIsDefaultAddress(true);
         requestDto.setComment("test comment");
 
         given(addressService.saveAddress(any(AddressSaveRequestDto.class), any(Member.class)))
@@ -63,7 +63,7 @@ class AddressControllerTest {
     void findAddressTest() throws Exception {
         AddressResponseDto responseDto = new AddressResponseDto();
         responseDto.setAddressId(1L);
-        responseDto.setDefaultAddress(true);
+        responseDto.setIsDefaultAddress(true);
         responseDto.setCity("test city");
         responseDto.setZipcode("test zipcode");
         responseDto.setStreet("test street");
@@ -77,7 +77,7 @@ class AddressControllerTest {
                 .andExpect(jsonPath("$.city").value("test city"))
                 .andExpect(jsonPath("$.zipcode").value("test zipcode"))
                 .andExpect(jsonPath("$.street").value("test street"))
-                .andExpect(jsonPath("$.defaultAddress").value(true))
+                .andExpect(jsonPath("$.isDefaultAddress").value(true))
                 .andDo(print());
     }
 
@@ -87,7 +87,7 @@ class AddressControllerTest {
         Long addressId = 1L;
 
         AddressUpdateRequestDto requestDto = new AddressUpdateRequestDto();
-        requestDto.setDefaultAddress(true);
+        requestDto.setIsDefaultAddress(true);
         requestDto.setCity("test update city");
         requestDto.setStreet("test update street");
         requestDto.setZipcode("test update zipcode");

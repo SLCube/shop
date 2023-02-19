@@ -52,7 +52,7 @@ class AddressServiceTest {
                 () -> assertThat(findAddress.getZipcode()).isEqualTo("test zipcode"),
                 () -> assertThat(findAddress.getStreet()).isEqualTo("test street"),
                 () -> assertThat(findAddress.getComment()).isEqualTo("test comment"),
-                () -> assertThat(findAddress.isDefaultAddress()).isEqualTo(true)
+                () -> assertThat(findAddress.getIsDefaultAddress()).isEqualTo(true)
         );
     }
 
@@ -61,7 +61,7 @@ class AddressServiceTest {
     void addressNotRegisterAnymoreTest() {
         for (int i = 0; i < 3; i++) {
             AddressSaveRequestDto requestDto = new AddressSaveRequestDto();
-            requestDto.setDefaultAddress(false);
+            requestDto.setIsDefaultAddress(false);
             requestDto.setCity("test city " + i);
             requestDto.setZipcode("test zipcode " + i);
             requestDto.setStreet("test street " + i);
@@ -91,7 +91,7 @@ class AddressServiceTest {
         addressUpdateRequestDto.setZipcode("update test zipcode");
         addressUpdateRequestDto.setStreet("update test street");
         addressUpdateRequestDto.setComment("update test comment");
-        addressUpdateRequestDto.setDefaultAddress(false);
+        addressUpdateRequestDto.setIsDefaultAddress(false);
 
         Long updateAddressId = addressService.updateAddress(addressId, addressUpdateRequestDto, member);
 
@@ -101,7 +101,7 @@ class AddressServiceTest {
                 () -> assertThat(address.getZipcode()).isEqualTo("update test zipcode"),
                 () -> assertThat(address.getStreet()).isEqualTo("update test street"),
                 () -> assertThat(address.getComment()).isEqualTo("update test comment"),
-                () -> assertThat(address.isDefaultAddress()).isEqualTo(false)
+                () -> assertThat(address.getIsDefaultAddress()).isEqualTo(false)
         );
     }
 
@@ -119,7 +119,7 @@ class AddressServiceTest {
 
     private static AddressSaveRequestDto createAddress() {
         AddressSaveRequestDto requestDto = new AddressSaveRequestDto();
-        requestDto.setDefaultAddress(true);
+        requestDto.setIsDefaultAddress(true);
         requestDto.setCity("test city");
         requestDto.setZipcode("test zipcode");
         requestDto.setStreet("test street");

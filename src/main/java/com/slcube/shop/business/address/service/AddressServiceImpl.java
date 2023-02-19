@@ -54,7 +54,7 @@ public class AddressServiceImpl implements AddressService {
         String zipcode = requestDto.getZipcode();
         String street = requestDto.getStreet();
         String comment = requestDto.getComment();
-        boolean defaultAddress = requestDto.isDefaultAddress();
+        Boolean defaultAddress = requestDto.getIsDefaultAddress();
         address.updateAddress(city, zipcode, street, comment, defaultAddress);
 
         return address.getId();

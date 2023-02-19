@@ -22,5 +22,5 @@ public class AddressSaveRequestDto {
     private String comment;
 
     @NotNull
-    private boolean isDefaultAddress;
+    private Boolean isDefaultAddress;
 }
