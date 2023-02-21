@@ -6,12 +6,12 @@ import org.springframework.data.domain.Pageable;
 
 public interface ReviewService {
 
-    public Long saveReview(ReviewSaveRequestDto requestDto);
-    public Long deleteReview(Long reviewId);
-    public Long recommendReview(Long reviewId);
-    public ReviewResponseDto findReview(Long reviewId);
-    public Page<ReviewListResponseDto> findAllReviews(Long itemId, Pageable pageable);
-    public Long reportReview(ReportedReviewSaveRequestDto requestDto);
-    public ReportedReviewResponseDto findReportedReview(Long reportedReviewId);
-    public Page<ReportedReviewListResponseDto> findAllReportedReviews(Pageable pageable);
+    Long saveReview(ReviewSaveRequestDto requestDto);
+    Long deleteReview(Long reviewId);
+    Long recommendReview(Long reviewId);
+    ReviewResponseDto findReview(Long reviewId);
+    Page<ReviewListResponseDto> findAllReviews(Long itemId, Pageable pageable);
+    Long reportReview(ReportedReviewSaveRequestDto requestDto);
+    ReportedReviewResponseDto findReportedReview(Long reportedReviewId);
+    Page<ReportedReviewListResponseDto> findAllReportedReviews(Pageable pageable);
 }

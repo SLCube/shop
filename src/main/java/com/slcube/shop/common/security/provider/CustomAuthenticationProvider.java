@@ -1,5 +1,6 @@
 package com.slcube.shop.common.security.provider;
 
+import com.slcube.shop.business.member.dto.MemberResponseDto;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import com.slcube.shop.common.security.token.AuthenticationToken;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("비밀번호가 틀렸습니다.");
         }
 
-        return new AuthenticationToken(memberContext, memberContext.getPassword(), memberContext.getAuthorities());
+        MemberResponseDto memberResponseDto = new MemberResponseDto(memberContext.getMember());
+
+        return new AuthenticationToken(memberResponseDto, memberContext.getPassword(), memberContext.getAuthorities());
     }
 
     @Override

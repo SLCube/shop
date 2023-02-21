@@ -1,11 +1,11 @@
 package com.slcube.shop.business.cart.dto;
 
 import com.slcube.shop.business.cart.domain.Cart;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class CartListResponseDto {
 
     private Long cartId;

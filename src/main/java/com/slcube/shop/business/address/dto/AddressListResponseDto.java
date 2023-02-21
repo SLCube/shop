@@ -9,7 +9,7 @@ public class AddressListResponseDto {
     private String zipcode;
     private String street;
     private String comment;
-    private boolean isDefaultAddress;
+    private Boolean isDefaultAddress;
 
     public AddressListResponseDto(Address address) {
         addressId = address.getId();
@@ -17,6 +17,6 @@ public class AddressListResponseDto {
         zipcode = address.getZipcode();
         street = address.getStreet();
         comment = address.getComment();
-        isDefaultAddress = address.isDefaultAddress();
+        isDefaultAddress = address.getIsDefaultAddress();
     }
 }

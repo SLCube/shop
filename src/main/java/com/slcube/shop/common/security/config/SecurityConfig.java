@@ -2,6 +2,7 @@ package com.slcube.shop.common.security.config;
 
 import com.slcube.shop.common.security.filter.LoginProcessingFilter;
 import com.slcube.shop.common.security.handler.CustomAuthenticationFailureHandler;
+import com.slcube.shop.common.security.handler.CustomAuthenticationLogoutSuccessHandler;
 import com.slcube.shop.common.security.handler.CustomAuthenticationSuccessHandler;
 import com.slcube.shop.common.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -41,7 +43,12 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
+                .logout()
+                .logoutUrl("/api/logout")
+                .logoutSuccessHandler(logoutSuccessHandler())
+                .and()
                 .addFilterBefore(loginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable()
                 .formLogin().disable();
 
         return http.build();
@@ -68,6 +75,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new CustomAuthenticationLogoutSuccessHandler();
     }
 
     @Bean

@@ -5,12 +5,17 @@ import com.slcube.shop.business.cart.dto.CartSaveRequestDto;
 import com.slcube.shop.business.cart.dto.CartUpdateRequestDto;
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.repository.ItemRepository;
+import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.common.exception.CartItemNotFoundException;
+import com.slcube.shop.common.security.WithMockMember;
+import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -18,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@WithMockMember
 class CartServiceImplTest {
 
     @Autowired
@@ -25,6 +31,11 @@ class CartServiceImplTest {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    private Member member;
 
     private Long itemId;
 
@@ -37,6 +48,10 @@ class CartServiceImplTest {
                 .build();
 
         itemId = itemRepository.save(item).getId();
+
+        MemberContext memberContext = (MemberContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        member = memberContext.getMember();
+        memberRepository.save(member);
     }
 
     @Test
@@ -59,10 +74,9 @@ class CartServiceImplTest {
         Long cartId = saveCart();
 
         CartUpdateRequestDto requestDto = new CartUpdateRequestDto();
-        requestDto.setCartId(cartId);
         requestDto.setQuantity(15);
 
-        Long updatedCartId = cartService.updateCart(requestDto);
+        Long updatedCartId = cartService.updateCart(cartId, requestDto);
 
         CartResponseDto cart = cartService.findCart(updatedCartId);
 
@@ -93,6 +107,6 @@ class CartServiceImplTest {
 
     private Long saveCart() {
         CartSaveRequestDto requestDto = createCartItem();
-        return cartService.saveCart(requestDto);
+        return cartService.saveCart(requestDto, member);
     }
 }

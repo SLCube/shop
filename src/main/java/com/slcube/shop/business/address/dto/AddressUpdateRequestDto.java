@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -20,6 +21,6 @@ public class AddressUpdateRequestDto {
 
     private String comment;
 
-    @NotBlank
-    private boolean isDefaultAddress;
+    @NotNull
+    private Boolean isDefaultAddress;
 }

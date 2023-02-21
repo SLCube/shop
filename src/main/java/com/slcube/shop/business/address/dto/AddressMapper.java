@@ -11,7 +11,7 @@ public class AddressMapper {
                 .zipcode(requestDto.getZipcode())
                 .street(requestDto.getStreet())
                 .comment(requestDto.getComment())
-                .isDefaultAddress(requestDto.isDefaultAddress())
+                .isDefaultAddress(requestDto.getIsDefaultAddress())
                 .member(member)
                 .build();
     }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface MemberService {
 
-    public Long signUp(MemberSignUpRequestDto requestDto);
+    Long signUp(MemberSignUpRequestDto requestDto);
 
-    public Long changePassword(MemberChangePasswordRequestDto requestDto);
+    Long changePassword(MemberChangePasswordRequestDto requestDto);
 }

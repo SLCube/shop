@@ -1,7 +1,7 @@
 package com.slcube.shop.common.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -20,11 +20,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        Member member = (Member) authentication.getPrincipal();
+        MemberResponseDto memberResponseDto = (MemberResponseDto) authentication.getPrincipal();
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        objectMapper.writeValue(response.getWriter(), member);
+        objectMapper.writeValue(response.getWriter(), memberResponseDto);
     }
 }

@@ -79,13 +79,12 @@ class ItemServiceTest {
 
 
         ItemUpdateRequestDto updateRequestDto = new ItemUpdateRequestDto();
-        updateRequestDto.setItemId(itemId);
         updateRequestDto.setPrice(20000);
         updateRequestDto.setCategoryId(categoryId2);
         updateRequestDto.setItemName("test item name 2");
 
         // when
-        Long updateItemId = itemService.updateItem(updateRequestDto);
+        Long updateItemId = itemService.updateItem(itemId, updateRequestDto);
 
         // then
         // 카테고리가 바뀐게 체크가 안되네..?
