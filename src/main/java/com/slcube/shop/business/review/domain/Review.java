@@ -52,6 +52,10 @@ public class Review extends BaseEntity {
         this.item = item;
     }
 
+    public void addMember(Member member) {
+        this.member = member;
+    }
+
     public void recommendReview() {
         this.recommendCount++;
     }

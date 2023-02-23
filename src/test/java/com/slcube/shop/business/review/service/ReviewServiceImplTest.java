@@ -2,16 +2,21 @@ package com.slcube.shop.business.review.service;
 
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.repository.ItemRepository;
+import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.review.dto.ReportedReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReportedReviewSaveRequestDto;
 import com.slcube.shop.business.review.dto.ReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
 import com.slcube.shop.common.exception.CustomException;
+import com.slcube.shop.common.security.WithMockMember;
+import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -19,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@WithMockMember
 class ReviewServiceImplTest {
 
     @Autowired
@@ -28,6 +34,10 @@ class ReviewServiceImplTest {
     private ItemRepository itemRepository;
 
     private Long itemId;
+
+    @Autowired
+    private MemberRepository memberRepository;
+    private Member member;
 
     @BeforeEach
     void beforeEach() {
@@ -39,6 +49,10 @@ class ReviewServiceImplTest {
                 .build();
 
         itemId = itemRepository.save(item).getId();
+
+        MemberContext memberContext = (MemberContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        member = memberContext.getMember();
+        memberRepository.save(member);
     }
 
     @Test
@@ -49,7 +63,7 @@ class ReviewServiceImplTest {
         ReviewSaveRequestDto requestDto = createReview();
 
         // when
-        Long reviewId = reviewService.saveReview(requestDto);
+        Long reviewId = reviewService.saveReview(requestDto, member);
 
         // then
         ReviewResponseDto findReview = reviewService.findReview(reviewId);
@@ -68,7 +82,7 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto);
+        Long reviewId = reviewService.saveReview(requestDto, member);
 
         // when
         Long deletedReviewId = reviewService.deleteReview(reviewId);
@@ -84,7 +98,7 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto);
+        Long reviewId = reviewService.saveReview(requestDto, member);
 
         // when
         Long recommendReviewId = reviewService.recommendReview(reviewId);
@@ -101,7 +115,7 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto);
+        Long reviewId = reviewService.saveReview(requestDto, member);
 
         ReportedReviewSaveRequestDto reportedReviewSaveRequestDto = new ReportedReviewSaveRequestDto();
         reportedReviewSaveRequestDto.setReviewId(reviewId);
