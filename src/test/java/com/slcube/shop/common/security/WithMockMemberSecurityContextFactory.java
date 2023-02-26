@@ -2,6 +2,7 @@ package com.slcube.shop.common.security;
 
 import com.slcube.shop.business.member.domain.Member;
 import com.slcube.shop.business.member.domain.MemberStatus;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import com.slcube.shop.common.security.token.AuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,9 +30,13 @@ public class WithMockMemberSecurityContextFactory implements WithSecurityContext
         List<GrantedAuthority> authorities = new ArrayList<>();
         GrantedAuthority authority = new SimpleGrantedAuthority(MemberStatus.MEMBER.name());
         authorities.add(authority);
+
         MemberContext memberContext = new MemberContext(member, authorities);
-        AuthenticationToken token = new AuthenticationToken(memberContext, member.getPassword(), authorities);
+        MemberSessionDto memberSessionDto = new MemberSessionDto(memberContext.getMember());
+
+        AuthenticationToken token = new AuthenticationToken(memberSessionDto, member.getPassword(), authorities);
         context.setAuthentication(token);
+
         return context;
     }
 }
