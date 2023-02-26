@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping
-    public Long saveAddress(AddressSaveRequestDto requestDto, @AuthenticationPrincipal MemberContext memberContext) {
+    public Long saveAddress(@RequestBody @Valid AddressSaveRequestDto requestDto, @AuthenticationPrincipal MemberContext memberContext) {
         return addressService.saveAddress(requestDto, memberContext.getMember());
     }
 
@@ -35,7 +36,7 @@ public class AddressController {
     }
 
     @PatchMapping("/{addressId}")
-    public Long updateAddress(@PathVariable Long addressId, AddressUpdateRequestDto requestDto, @AuthenticationPrincipal MemberContext memberContext) {
+    public Long updateAddress(@PathVariable Long addressId, @RequestBody @Valid AddressUpdateRequestDto requestDto, @AuthenticationPrincipal MemberContext memberContext) {
         return addressService.updateAddress(addressId, requestDto, memberContext.getMember());
     }
 

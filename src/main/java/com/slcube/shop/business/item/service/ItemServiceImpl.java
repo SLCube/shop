@@ -42,16 +42,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Long updateItem(ItemUpdateRequestDto requestDto) {
-
-        Long itemId = requestDto.getItemId();
+    public Long updateItem(Long itemId, ItemUpdateRequestDto requestDto) {
         Long categoryId = requestDto.getCategoryId();
 
         Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
         Category category = categoryRepositoryHelper.findById(categoryRepository, categoryId);
 
         item.updateItem(requestDto, category);
-        return requestDto.getItemId();
+        return item.getId();
     }
 
     @Override

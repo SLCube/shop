@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface OrderService {
 
-    public Long createOrder(OrderCreateRequestDto requestDto);
-    public Long cancelOrder(Long orderId);
-    public Page<OrderListResponseDto> getOrders();
+    Long createOrder(OrderCreateRequestDto requestDto);
+    Long cancelOrder(Long orderId);
+    Page<OrderListResponseDto> getOrders();
 }

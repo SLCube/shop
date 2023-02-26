@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface CategoryService {
 
-    public Long saveCategory(CategorySaveRequestDto requestDto);
-    public Long updateCategory(CategoryUpdateRequestDto requestDto);
-    public Long deleteCategory(Long categoryId);
-    public CategoryResponseDto findCategory(Long categoryId);
-    public List<CategoryListResponseDto> findAllCategories();
+    Long saveCategory(CategorySaveRequestDto requestDto);
+    Long updateCategory(CategoryUpdateRequestDto requestDto);
+    Long deleteCategory(Long categoryId);
+    CategoryResponseDto findCategory(Long categoryId);
+    List<CategoryListResponseDto> findAllCategories();
 }
