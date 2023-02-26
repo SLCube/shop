@@ -8,12 +8,12 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class MemberResponseDto implements Serializable {
+public class MemberSessionDto implements Serializable {
 
     private String email;
     private String username;
 
-    public MemberResponseDto(Member member) {
+    public MemberSessionDto(Member member) {
         email = member.getEmail();
         username = member.getUsername();
     }
