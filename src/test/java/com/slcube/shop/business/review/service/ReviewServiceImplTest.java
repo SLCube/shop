@@ -3,6 +3,7 @@ package com.slcube.shop.business.review.service;
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.repository.ItemRepository;
 import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.review.dto.ReportedReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReportedReviewSaveRequestDto;
@@ -61,9 +62,9 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
         // when
-        Long reviewId = reviewService.saveReview(requestDto, member);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         // then
         ReviewResponseDto findReview = reviewService.findReview(reviewId);
@@ -82,7 +83,8 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto, member);
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         // when
         Long deletedReviewId = reviewService.deleteReview(reviewId);
@@ -98,7 +100,8 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto, member);
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         // when
         Long recommendReviewId = reviewService.recommendReview(reviewId);
@@ -115,7 +118,8 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto, member);
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         ReportedReviewSaveRequestDto reportedReviewSaveRequestDto = new ReportedReviewSaveRequestDto();
         reportedReviewSaveRequestDto.setReviewId(reviewId);
