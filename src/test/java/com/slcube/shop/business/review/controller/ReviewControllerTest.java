@@ -2,6 +2,7 @@ package com.slcube.shop.business.review.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
+import com.slcube.shop.business.review.dto.ReportedReviewListResponseDto;
 import com.slcube.shop.business.review.dto.ReportedReviewSaveRequestDto;
 import com.slcube.shop.business.review.dto.ReviewListResponseDto;
 import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
@@ -119,6 +120,36 @@ class ReviewControllerTest {
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(reportedReviewId)))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("신고된 리뷰 조회")
+    void findAllReportedReviewsTest() throws Exception {
+
+        List<ReportedReviewListResponseDto> reportedReviewList = new ArrayList<>();
+
+        for (int i = 1; i <= 3; i++) {
+            ReportedReviewListResponseDto reportedReview = new ReportedReviewListResponseDto();
+
+            ReflectionTestUtils.setField(reportedReview, "reportedReviewId", (long) i);
+            ReflectionTestUtils.setField(reportedReview, "reviewId", 1L);
+            ReflectionTestUtils.setField(reportedReview, "reportedReason", "test report reason " + i);
+
+            reportedReviewList.add(reportedReview);
+        }
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<ReportedReviewListResponseDto> reportedReviews = new PageImpl<>(reportedReviewList, pageable, reportedReviewList.size());
+
+        given(reviewService.findAllReportedReviews(any(Pageable.class)))
+                .willReturn(reportedReviews);
+
+        mockMvc.perform(get("/api/reviews/reported")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(reportedReviews)))
                 .andDo(print());
     }
 }
