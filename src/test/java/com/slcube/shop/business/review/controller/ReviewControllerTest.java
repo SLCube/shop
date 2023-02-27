@@ -2,10 +2,7 @@ package com.slcube.shop.business.review.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
-import com.slcube.shop.business.review.dto.ReportedReviewListResponseDto;
-import com.slcube.shop.business.review.dto.ReportedReviewSaveRequestDto;
-import com.slcube.shop.business.review.dto.ReviewListResponseDto;
-import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
+import com.slcube.shop.business.review.dto.*;
 import com.slcube.shop.business.review.service.ReviewService;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.DisplayName;
@@ -90,8 +87,6 @@ class ReviewControllerTest {
         given(reviewService.findAllReviews(anyLong(), any(Pageable.class)))
                 .willReturn(reviews);
 
-        Long itemId = 1L;
-
         mockMvc.perform(get("/api/reviews")
                         .with(csrf())
                         .queryParam("itemId", "1"))
@@ -150,6 +145,27 @@ class ReviewControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(reportedReviews)))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("신고된 리뷰 단건 조회")
+    void findReportedReviewTest() throws Exception {
+        ReportedReviewResponseDto responseDto = new ReportedReviewResponseDto();
+
+        ReflectionTestUtils.setField(responseDto, "reportedReviewId", 1L);
+        ReflectionTestUtils.setField(responseDto, "reviewId", 1L);
+        ReflectionTestUtils.setField(responseDto, "reportedReason", "test report reason");
+
+        given(reviewService.findReportedReview(anyLong()))
+                .willReturn(responseDto);
+
+        Long reportedReviewId = 1L;
+
+        mockMvc.perform(get("/api/reviews/reported/" + reportedReviewId)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(responseDto)))
                 .andDo(print());
     }
 }
