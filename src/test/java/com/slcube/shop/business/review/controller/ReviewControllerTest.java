@@ -2,6 +2,7 @@ package com.slcube.shop.business.review.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
+import com.slcube.shop.business.review.dto.ReportedReviewSaveRequestDto;
 import com.slcube.shop.business.review.dto.ReviewListResponseDto;
 import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
 import com.slcube.shop.business.review.service.ReviewService;
@@ -95,6 +96,29 @@ class ReviewControllerTest {
                         .queryParam("itemId", "1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(reviews)))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("리뷰 신고")
+    void reportReviewTest() throws Exception {
+
+        Long reportedReviewId = 1L;
+
+        given(reviewService.reportReview(any(ReportedReviewSaveRequestDto.class)))
+                .willReturn(reportedReviewId);
+
+        ReportedReviewSaveRequestDto requestDto = new ReportedReviewSaveRequestDto();
+
+        ReflectionTestUtils.setField(requestDto, "reviewId", 1L);
+        ReflectionTestUtils.setField(requestDto, "reportedReason", "test reported reason");
+
+        mockMvc.perform(post("/api/reviews/reported")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(reportedReviewId)))
                 .andDo(print());
     }
 }
