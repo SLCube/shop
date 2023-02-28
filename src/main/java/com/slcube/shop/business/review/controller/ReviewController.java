@@ -32,6 +32,12 @@ public class ReviewController {
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Long> deleteReview(@PathVariable Long reviewId) {
+        Long deletedReviewId = reviewService.deleteReview(reviewId);
+        return new ResponseEntity<>(deletedReviewId, HttpStatus.OK);
+    }
+
     @PostMapping("/reported")
     public ResponseEntity<Long> reportReview(ReportedReviewSaveRequestDto requestDto) {
         Long reportedReviewId = reviewService.reportReview(requestDto);

@@ -25,8 +25,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -92,6 +91,21 @@ class ReviewControllerTest {
                         .queryParam("itemId", "1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(reviews)))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제")
+    void deleteReviewTest() throws Exception {
+        Long deletedReviewId = 1L;
+
+        given(reviewService.deleteReview(anyLong()))
+                .willReturn(deletedReviewId);
+
+        mockMvc.perform(delete("/api/reviews/" + deletedReviewId)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(deletedReviewId)))
                 .andDo(print());
     }
 
