@@ -38,6 +38,12 @@ public class ReviewController {
         return new ResponseEntity<>(deletedReviewId, HttpStatus.OK);
     }
 
+    @PatchMapping("/recommended/{reviewId}")
+    public ResponseEntity<Long> recommendReview(@PathVariable Long reviewId) {
+        Long recommendedReviewId = reviewService.recommendReview(reviewId);
+        return new ResponseEntity<>(recommendedReviewId, HttpStatus.OK);
+    }
+
     @PostMapping("/reported")
     public ResponseEntity<Long> reportReview(ReportedReviewSaveRequestDto requestDto) {
         Long reportedReviewId = reviewService.reportReview(requestDto);

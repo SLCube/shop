@@ -110,6 +110,21 @@ class ReviewControllerTest {
     }
 
     @Test
+    @DisplayName("리뷰 추천")
+    void recommendReviewTest() throws Exception {
+        Long recommendedReviewId = 1L;
+
+        given(reviewService.recommendReview(anyLong()))
+                .willReturn(recommendedReviewId);
+
+        mockMvc.perform(patch("/api/reviews/recommended/" + recommendedReviewId)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(recommendedReviewId)))
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("리뷰 신고")
     void reportReviewTest() throws Exception {
 
