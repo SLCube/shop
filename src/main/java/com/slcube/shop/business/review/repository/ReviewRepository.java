@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ReviewRepository extends ReviewQueryRepository, JpaRepository<Review, Long> {
 
     @Query("select r from Review r where r.isDeleted = false and r.id = :id")
-    public Optional<Review> findByNotDeleted(@Param("id") Long reviewId);
+    Optional<Review> findByNotDeleted(@Param("id") Long reviewId);
 }
