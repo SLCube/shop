@@ -65,7 +65,7 @@ class ReviewControllerTest {
     }
 
     @Test
-    @DisplayName("리뷰 조회")
+    @DisplayName("리뷰 리스트 조회")
     void findAllReviewsTest() throws Exception {
         List<ReviewListResponseDto> reviewList = new ArrayList<>();
 
