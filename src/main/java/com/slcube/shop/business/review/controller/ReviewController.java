@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -21,9 +23,15 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Long> saveReview(@RequestBody @Valid ReviewSaveRequestDto requestDto, @AuthenticationPrincipal MemberSessionDto memberSessionDto) {
-        Long reviewId = reviewService.saveReview(requestDto, memberSessionDto);
-        return new ResponseEntity<>(reviewId, HttpStatus.CREATED);
+    public ResponseEntity<Void> saveReview(@RequestBody @Valid ReviewSaveRequestDto requestDto, @AuthenticationPrincipal MemberSessionDto memberSessionDto) {
+        reviewService.saveReview(requestDto, memberSessionDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .queryParam("itemId", requestDto.getItemId())
+                .build()
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping
