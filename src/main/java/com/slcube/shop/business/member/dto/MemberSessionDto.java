@@ -8,11 +8,13 @@ import java.io.Serializable;
 @Getter
 public class MemberSessionDto implements Serializable {
 
-    private String email;
+    private Long memberId;
+    private String loginEmail;
     private String username;
 
     public MemberSessionDto(Member member) {
-        email = member.getEmail();
+        memberId = member.getId();
+        loginEmail = member.getEmail();
         username = member.getUsername();
     }
 }

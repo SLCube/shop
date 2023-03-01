@@ -1,10 +1,7 @@
 package com.slcube.shop.business.review.service;
 
 import com.slcube.shop.business.item.domain.Item;
-import com.slcube.shop.business.member.domain.Member;
-import com.slcube.shop.business.member.domain.MemberStatus;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
-import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.review.domain.ReportedReview;
 import com.slcube.shop.business.review.domain.Review;
 import com.slcube.shop.business.review.dto.*;
@@ -32,17 +29,15 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepositoryHelper reviewRepositoryHelper;
     private final ReviewValidation reviewValidation;
     private final ReportedReviewRepository reportedReviewRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     public Long saveReview(ReviewSaveRequestDto requestDto, MemberSessionDto memberSessionDto) {
         Long itemId = requestDto.getItemId();
         Item item = reviewValidation.validateCreateReview(itemId);
-        Member member = memberRepository.findByEmailAndMemberStatus(memberSessionDto.getEmail(), MemberStatus.MEMBER);
 
-        Review review = ReviewMapper.toEntity(requestDto);
+        Review review = ReviewMapper.toEntity(requestDto, memberSessionDto.getMemberId());
         review.addItem(item);
-        review.addMember(member);
+//        review.addMember(member);
         return reviewRepository.save(review).getId();
     }
 
