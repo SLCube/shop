@@ -34,6 +34,12 @@ public class ReviewController {
         return ResponseEntity.created(location).build();
     }
 
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ReviewResponseDto> findReview(@PathVariable Long reviewId) {
+        ReviewResponseDto review = reviewService.findReview(reviewId);
+        return new ResponseEntity<>(review, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<Page<ReviewListResponseDto>> findAllReviews(Long itemId, Pageable pageable) {
         Page<ReviewListResponseDto> reviews = reviewService.findAllReviews(itemId, pageable);

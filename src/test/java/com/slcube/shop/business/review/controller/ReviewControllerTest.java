@@ -65,6 +65,28 @@ class ReviewControllerTest {
     }
 
     @Test
+    @DisplayName("리뷰 단건 조회")
+    void findReviewTest() throws Exception {
+        Long reviewId = 1L;
+
+        ReviewResponseDto responseDto = new ReviewResponseDto();
+
+        ReflectionTestUtils.setField(responseDto, "reviewId", reviewId);
+        ReflectionTestUtils.setField(responseDto, "reviewRate", 4.5);
+        ReflectionTestUtils.setField(responseDto, "reviewer", "test reviewer");
+        ReflectionTestUtils.setField(responseDto, "reviewContent", "test review Content");
+        ReflectionTestUtils.setField(responseDto, "recommendCount", 10);
+
+        given(reviewService.findReview(anyLong()))
+                .willReturn(responseDto);
+
+        mockMvc.perform(get("/api/reviews/" + reviewId))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(responseDto)))
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("리뷰 리스트 조회")
     void findAllReviewsTest() throws Exception {
         List<ReviewListResponseDto> reviewList = new ArrayList<>();
