@@ -11,7 +11,6 @@ import com.slcube.shop.business.review.dto.ReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
 import com.slcube.shop.common.exception.CustomException;
 import com.slcube.shop.common.security.WithMockMember;
-import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -51,8 +51,13 @@ class ReviewServiceImplTest {
 
         itemId = itemRepository.save(item).getId();
 
-        MemberContext memberContext = (MemberContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        member = memberContext.getMember();
+        MemberSessionDto sessionDto = (MemberSessionDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        member = Member.builder()
+                .username(sessionDto.getUsername())
+                .email(sessionDto.getLoginEmail())
+                .password("test password")
+                .build();
+
         memberRepository.save(member);
     }
 

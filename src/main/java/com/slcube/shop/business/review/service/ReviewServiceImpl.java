@@ -37,7 +37,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         Review review = ReviewMapper.toEntity(requestDto, memberSessionDto.getMemberId());
         review.addItem(item);
-//        review.addMember(member);
         return reviewRepository.save(review).getId();
     }
 
@@ -59,9 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResponseDto findReview(Long reviewId) {
-        Review review = reviewRepositoryHelper.findByNotDeleted(reviewRepository, reviewId);
-
-        return new ReviewResponseDto(review);
+        return reviewRepositoryHelper.findDtoByNotDeleted(reviewRepository, reviewId);
     }
 
     @Override
