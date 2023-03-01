@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.review.dto.*;
 import com.slcube.shop.business.review.service.ReviewService;
+import com.slcube.shop.common.security.TestSecurityConfig;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -24,13 +26,13 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReviewController.class)
+@WebMvcTest(value = ReviewController.class)
+@ImportAutoConfiguration(TestSecurityConfig.class)
 @WithMockMember
 class ReviewControllerTest {
 
@@ -56,9 +58,8 @@ class ReviewControllerTest {
         ReflectionTestUtils.setField(requestDto, "reviewContent", "좋아요");
 
         mockMvc.perform(post("/api/reviews")
-                .with(csrf())
-                .content(objectMapper.writeValueAsString(requestDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(reviewId)))
                 .andDo(print());
@@ -87,7 +88,6 @@ class ReviewControllerTest {
                 .willReturn(reviews);
 
         mockMvc.perform(get("/api/reviews")
-                        .with(csrf())
                         .queryParam("itemId", "1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(reviews)))
@@ -102,8 +102,7 @@ class ReviewControllerTest {
         given(reviewService.deleteReview(anyLong()))
                 .willReturn(deletedReviewId);
 
-        mockMvc.perform(delete("/api/reviews/" + deletedReviewId)
-                        .with(csrf()))
+        mockMvc.perform(delete("/api/reviews/" + deletedReviewId))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(deletedReviewId)))
                 .andDo(print());
@@ -117,8 +116,7 @@ class ReviewControllerTest {
         given(reviewService.recommendReview(anyLong()))
                 .willReturn(recommendedReviewId);
 
-        mockMvc.perform(patch("/api/reviews/recommended/" + recommendedReviewId)
-                        .with(csrf()))
+        mockMvc.perform(patch("/api/reviews/recommended/" + recommendedReviewId))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(recommendedReviewId)))
                 .andDo(print());
@@ -139,7 +137,6 @@ class ReviewControllerTest {
         ReflectionTestUtils.setField(requestDto, "reportedReason", "test reported reason");
 
         mockMvc.perform(post("/api/reviews/reported")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -170,8 +167,7 @@ class ReviewControllerTest {
         given(reviewService.findAllReportedReviews(any(Pageable.class)))
                 .willReturn(reportedReviews);
 
-        mockMvc.perform(get("/api/reviews/reported")
-                        .with(csrf()))
+        mockMvc.perform(get("/api/reviews/reported"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(reportedReviews)))
                 .andDo(print());
@@ -191,8 +187,7 @@ class ReviewControllerTest {
 
         Long reportedReviewId = 1L;
 
-        mockMvc.perform(get("/api/reviews/reported/" + reportedReviewId)
-                        .with(csrf()))
+        mockMvc.perform(get("/api/reviews/reported/" + reportedReviewId))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(responseDto)))
                 .andDo(print());
