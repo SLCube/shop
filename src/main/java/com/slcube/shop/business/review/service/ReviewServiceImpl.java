@@ -66,9 +66,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<ReviewListResponseDto> findAllReviews(Long itemId, Pageable pageable) {
-        List<ReviewListResponseDto> reviews = reviewRepository.findByItemId(itemId, pageable).stream()
-                .map(ReviewListResponseDto::new)
-                .collect(Collectors.toList());
+        List<ReviewListResponseDto> reviews = reviewRepository.findByItemId(itemId, pageable);
 
         return new PageImpl<>(reviews, pageable, reviews.size());
     }
