@@ -139,7 +139,7 @@ class ReviewControllerTest {
 
         mockMvc.perform(patch("/api/reviews/recommended/" + recommendedReviewId))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(recommendedReviewId)))
+                .andExpect(redirectedUrl("http://localhost/api/reviews/"+recommendedReviewId))
                 .andDo(print());
     }
 

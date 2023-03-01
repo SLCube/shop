@@ -53,9 +53,15 @@ public class ReviewController {
     }
 
     @PatchMapping("/recommended/{reviewId}")
-    public ResponseEntity<Long> recommendReview(@PathVariable Long reviewId) {
+    public ResponseEntity<Void> recommendReview(@PathVariable Long reviewId) {
         Long recommendedReviewId = reviewService.recommendReview(reviewId);
-        return new ResponseEntity<>(recommendedReviewId, HttpStatus.OK);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentServletMapping()
+                .path("/api/reviews/{reviewId}")
+                .buildAndExpand(recommendedReviewId)
+                .toUri();
+
+        return ResponseEntity.ok().location(location).build();
     }
 
     @PostMapping("/reported")
