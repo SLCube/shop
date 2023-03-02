@@ -125,7 +125,6 @@ class ReviewControllerTest {
 
         mockMvc.perform(delete("/api/reviews/" + deletedReviewId))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(deletedReviewId)))
                 .andDo(print());
     }
 
