@@ -65,9 +65,9 @@ public class ReviewController {
     }
 
     @PostMapping("/reported")
-    public ResponseEntity<Long> reportReview(ReportedReviewSaveRequestDto requestDto) {
-        Long reportedReviewId = reviewService.reportReview(requestDto);
-        return new ResponseEntity<>(reportedReviewId, HttpStatus.CREATED);
+    public ResponseEntity<Void> reportReview(ReportedReviewSaveRequestDto requestDto) {
+        reviewService.reportReview(requestDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/reported")
