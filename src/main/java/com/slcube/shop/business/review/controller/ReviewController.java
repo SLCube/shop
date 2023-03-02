@@ -65,7 +65,7 @@ public class ReviewController {
     }
 
     @PostMapping("/reported")
-    public ResponseEntity<Void> reportReview(ReportedReviewSaveRequestDto requestDto) {
+    public ResponseEntity<Void> reportReview(@RequestBody @Valid ReportedReviewSaveRequestDto requestDto) {
         reviewService.reportReview(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
