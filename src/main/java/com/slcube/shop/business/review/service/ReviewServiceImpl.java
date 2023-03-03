@@ -58,14 +58,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResponseDto findReview(Long reviewId) {
-        return reviewRepositoryHelper.findDtoByNotDeleted(reviewRepository, reviewId);
+        Review review = reviewRepositoryHelper.findByNotDeleted(reviewRepository, reviewId);
+        return new ReviewResponseDto(review);
     }
 
     @Override
     public Page<ReviewListResponseDto> findAllReviews(Long itemId, Pageable pageable) {
-        List<ReviewListResponseDto> reviews = reviewRepository.findByItemId(itemId, pageable);
-
-        return new PageImpl<>(reviews, pageable, reviews.size());
+        return reviewRepository.findByItemId(itemId, pageable)
+                .map(ReviewListResponseDto::new);
     }
 
     @Override

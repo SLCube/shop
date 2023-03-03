@@ -78,7 +78,8 @@ class ReviewServiceImplTest {
         assertAll(
                 () -> assertThat(findReview.getReviewContent()).isEqualTo("test review content"),
                 () -> assertThat(findReview.getReviewRate()).isEqualTo(4.5),
-                () -> assertThat(findReview.getRecommendCount()).isEqualTo(0)
+                () -> assertThat(findReview.getRecommendCount()).isEqualTo(0),
+                () -> assertThat(findReview.getReviewer()).isEqualTo("test username")
         );
     }
 
