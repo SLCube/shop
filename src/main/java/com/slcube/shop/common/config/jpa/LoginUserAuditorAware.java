@@ -1,7 +1,6 @@
 package com.slcube.shop.common.config.jpa;
 
-import com.slcube.shop.business.member.domain.Member;
-import com.slcube.shop.common.security.authenticationContext.MemberContext;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static com.slcube.shop.business.member.domain.MemberStatus.*;
+import static com.slcube.shop.business.member.domain.MemberStatus.ANONYMOUS_USER;
 
 @Component
 public class LoginUserAuditorAware implements AuditorAware<String> {
@@ -26,8 +25,7 @@ public class LoginUserAuditorAware implements AuditorAware<String> {
             return Optional.of(ANONYMOUS_USER.getMemberStatus());
         }
 
-        MemberContext memberContext = (MemberContext) authentication.getPrincipal();
-        Member member = memberContext.getMember();
-        return Optional.ofNullable(member.getUsername());
+        MemberSessionDto sessionDto = (MemberSessionDto) authentication.getPrincipal();
+        return Optional.ofNullable(sessionDto.getUsername());
     }
 }

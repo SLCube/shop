@@ -1,6 +1,7 @@
 package com.slcube.shop.business.review.service;
 
 import com.slcube.shop.business.item.domain.Item;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.review.domain.ReportedReview;
 import com.slcube.shop.business.review.domain.Review;
 import com.slcube.shop.business.review.dto.*;
@@ -30,13 +31,12 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReportedReviewRepository reportedReviewRepository;
 
     @Override
-    public Long saveReview(ReviewSaveRequestDto requestDto) {
+    public Long saveReview(ReviewSaveRequestDto requestDto, MemberSessionDto memberSessionDto) {
         Long itemId = requestDto.getItemId();
         Item item = reviewValidation.validateCreateReview(itemId);
 
-        Review review = ReviewMapper.toEntity(requestDto);
+        Review review = ReviewMapper.toEntity(requestDto, memberSessionDto.getMemberId());
         review.addItem(item);
-
         return reviewRepository.save(review).getId();
     }
 
@@ -59,17 +59,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewResponseDto findReview(Long reviewId) {
         Review review = reviewRepositoryHelper.findByNotDeleted(reviewRepository, reviewId);
-
         return new ReviewResponseDto(review);
     }
 
     @Override
     public Page<ReviewListResponseDto> findAllReviews(Long itemId, Pageable pageable) {
-        List<ReviewListResponseDto> reviews = reviewRepository.findByItemId(itemId, pageable).stream()
-                .map(ReviewListResponseDto::new)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(reviews, pageable, reviews.size());
+        return reviewRepository.findByItemId(itemId, pageable)
+                .map(ReviewListResponseDto::new);
     }
 
     @Override

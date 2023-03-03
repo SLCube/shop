@@ -1,9 +1,8 @@
 package com.slcube.shop.business.review.domain;
 
+import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import com.slcube.shop.common.domain.BaseEntity;
-import com.slcube.shop.business.member.domain.Member;
-import com.slcube.shop.business.item.domain.Item;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,14 +37,13 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @Builder
-    private Review(double reviewRate, String reviewContent) {
+    private Review(double reviewRate, String reviewContent, Long memberId) {
         this.reviewRate = reviewRate;
         this.reviewContent = reviewContent;
+        this.memberId = memberId;
     }
 
     public void addItem(Item item) {

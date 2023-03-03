@@ -2,23 +2,30 @@ package com.slcube.shop.business.review.service;
 
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.repository.ItemRepository;
+import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
+import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.review.dto.ReportedReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReportedReviewSaveRequestDto;
 import com.slcube.shop.business.review.dto.ReviewResponseDto;
 import com.slcube.shop.business.review.dto.ReviewSaveRequestDto;
 import com.slcube.shop.common.exception.CustomException;
+import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
+@WithMockMember
 class ReviewServiceImplTest {
 
     @Autowired
@@ -28,6 +35,10 @@ class ReviewServiceImplTest {
     private ItemRepository itemRepository;
 
     private Long itemId;
+
+    @Autowired
+    private MemberRepository memberRepository;
+    private Member member;
 
     @BeforeEach
     void beforeEach() {
@@ -39,6 +50,15 @@ class ReviewServiceImplTest {
                 .build();
 
         itemId = itemRepository.save(item).getId();
+
+        MemberSessionDto sessionDto = (MemberSessionDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        member = Member.builder()
+                .username(sessionDto.getUsername())
+                .email(sessionDto.getLoginEmail())
+                .password("test password")
+                .build();
+
+        memberRepository.save(member);
     }
 
     @Test
@@ -47,9 +67,9 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
         // when
-        Long reviewId = reviewService.saveReview(requestDto);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         // then
         ReviewResponseDto findReview = reviewService.findReview(reviewId);
@@ -58,7 +78,8 @@ class ReviewServiceImplTest {
         assertAll(
                 () -> assertThat(findReview.getReviewContent()).isEqualTo("test review content"),
                 () -> assertThat(findReview.getReviewRate()).isEqualTo(4.5),
-                () -> assertThat(findReview.getRecommendCount()).isEqualTo(0)
+                () -> assertThat(findReview.getRecommendCount()).isEqualTo(0),
+                () -> assertThat(findReview.getReviewer()).isEqualTo("test username")
         );
     }
 
@@ -68,7 +89,8 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto);
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         // when
         Long deletedReviewId = reviewService.deleteReview(reviewId);
@@ -84,7 +106,8 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto);
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         // when
         Long recommendReviewId = reviewService.recommendReview(reviewId);
@@ -101,7 +124,8 @@ class ReviewServiceImplTest {
 
         // given
         ReviewSaveRequestDto requestDto = createReview();
-        Long reviewId = reviewService.saveReview(requestDto);
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        Long reviewId = reviewService.saveReview(requestDto, sessionDto);
 
         ReportedReviewSaveRequestDto reportedReviewSaveRequestDto = new ReportedReviewSaveRequestDto();
         reportedReviewSaveRequestDto.setReviewId(reviewId);

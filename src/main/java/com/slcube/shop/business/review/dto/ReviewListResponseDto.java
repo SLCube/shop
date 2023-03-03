@@ -2,10 +2,10 @@ package com.slcube.shop.business.review.dto;
 
 import com.slcube.shop.business.review.domain.Review;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class ReviewListResponseDto {
 
     private Long reviewId;
@@ -16,7 +16,7 @@ public class ReviewListResponseDto {
 
     public ReviewListResponseDto(Review review) {
         reviewId = review.getId();
-        reviewer = review.getMember().getUsername();
+        reviewer = review.getCreatedBy();
         reviewRate = review.getReviewRate();
         reviewContent = review.getReviewContent();
         recommendedCount = review.getRecommendCount();

@@ -2,19 +2,19 @@ package com.slcube.shop.business.member.dto;
 
 import com.slcube.shop.business.member.domain.Member;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 
 @Getter
-@Setter
-public class MemberResponseDto implements Serializable {
+public class MemberSessionDto implements Serializable {
 
-    private String email;
+    private Long memberId;
+    private String loginEmail;
     private String username;
 
-    public MemberResponseDto(Member member) {
-        email = member.getEmail();
+    public MemberSessionDto(Member member) {
+        memberId = member.getId();
+        loginEmail = member.getEmail();
         username = member.getUsername();
     }
 }
