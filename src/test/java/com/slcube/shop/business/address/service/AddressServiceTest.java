@@ -4,11 +4,11 @@ import com.slcube.shop.business.address.dto.AddressResponseDto;
 import com.slcube.shop.business.address.dto.AddressSaveRequestDto;
 import com.slcube.shop.business.address.dto.AddressUpdateRequestDto;
 import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.common.exception.AddressNotFoundException;
 import com.slcube.shop.common.exception.AddressNotRegisterAnymore;
 import com.slcube.shop.common.security.WithMockMember;
-import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
@@ -34,8 +35,12 @@ class AddressServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        MemberContext memberContext = (MemberContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        member = memberContext.getMember();
+        MemberSessionDto sessionDto = (MemberSessionDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        member = Member.builder()
+                .email(sessionDto.getLoginEmail())
+                .username(sessionDto.getUsername())
+                .password("test password")
+                .build();
         memberRepository.save(member);
     }
 
@@ -43,9 +48,9 @@ class AddressServiceTest {
     @DisplayName("배송지 저장")
     void saveAddressTest() {
         AddressSaveRequestDto requestDto = createAddress();
-
-        Long saveId = addressService.saveAddress(requestDto, member);
-        AddressResponseDto findAddress = addressService.findAddress(saveId, member);
+        MemberSessionDto sessionDto = createSessionDto();
+        Long saveId = addressService.saveAddress(requestDto, sessionDto);
+        AddressResponseDto findAddress = addressService.findAddress(saveId, sessionDto);
 
         assertAll(
                 () -> assertThat(findAddress.getCity()).isEqualTo("test city"),
@@ -59,6 +64,9 @@ class AddressServiceTest {
     @Test
     @DisplayName("배송지가 3개일때 배송지 추가 시도")
     void addressNotRegisterAnymoreTest() {
+
+        MemberSessionDto sessionDto = createSessionDto();
+
         for (int i = 0; i < 3; i++) {
             AddressSaveRequestDto requestDto = new AddressSaveRequestDto();
             requestDto.setIsDefaultAddress(false);
@@ -66,7 +74,7 @@ class AddressServiceTest {
             requestDto.setZipcode("test zipcode " + i);
             requestDto.setStreet("test street " + i);
             requestDto.setComment("test comment " + i);
-            addressService.saveAddress(requestDto, member);
+            addressService.saveAddress(requestDto, sessionDto);
         }
 
         AddressSaveRequestDto fourthAddress = new AddressSaveRequestDto();
@@ -75,15 +83,17 @@ class AddressServiceTest {
         fourthAddress.setStreet("fourth address street");
 
         assertThrows(AddressNotRegisterAnymore.class,
-                () -> addressService.saveAddress(fourthAddress, member));
+                () -> addressService.saveAddress(fourthAddress, sessionDto));
     }
 
     @Test
     @DisplayName("배송지 수정")
     void updateAddressTest() {
+        MemberSessionDto sessionDto = createSessionDto();
+
         AddressSaveRequestDto addressSaveRequestDto = createAddress();
 
-        Long addressId = addressService.saveAddress(addressSaveRequestDto, member);
+        Long addressId = addressService.saveAddress(addressSaveRequestDto, sessionDto);
 
         AddressUpdateRequestDto addressUpdateRequestDto = new AddressUpdateRequestDto();
 
@@ -93,9 +103,9 @@ class AddressServiceTest {
         addressUpdateRequestDto.setComment("update test comment");
         addressUpdateRequestDto.setIsDefaultAddress(false);
 
-        Long updateAddressId = addressService.updateAddress(addressId, addressUpdateRequestDto, member);
+        Long updateAddressId = addressService.updateAddress(addressId, addressUpdateRequestDto, sessionDto);
 
-        AddressResponseDto address = addressService.findAddress(updateAddressId, member);
+        AddressResponseDto address = addressService.findAddress(updateAddressId, sessionDto);
         assertAll(
                 () -> assertThat(address.getCity()).isEqualTo("update test city"),
                 () -> assertThat(address.getZipcode()).isEqualTo("update test zipcode"),
@@ -108,13 +118,15 @@ class AddressServiceTest {
     @Test
     @DisplayName("배송지 삭제")
     void deleteAddressTest() {
-        AddressSaveRequestDto addressSaveRequestDto = createAddress();
-        Long addressId = addressService.saveAddress(addressSaveRequestDto, member);
+        MemberSessionDto sessionDto = createSessionDto();
 
-        Long deletedAddressId = addressService.deleteAddress(addressId, member);
+        AddressSaveRequestDto addressSaveRequestDto = createAddress();
+        Long addressId = addressService.saveAddress(addressSaveRequestDto, sessionDto);
+
+        Long deletedAddressId = addressService.deleteAddress(addressId, sessionDto);
 
         assertThrows(AddressNotFoundException.class,
-                () -> addressService.findAddress(deletedAddressId, member));
+                () -> addressService.findAddress(deletedAddressId, sessionDto));
     }
 
     private static AddressSaveRequestDto createAddress() {
@@ -125,5 +137,10 @@ class AddressServiceTest {
         requestDto.setStreet("test street");
         requestDto.setComment("test comment");
         return requestDto;
+    }
+
+    private MemberSessionDto createSessionDto() {
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        return sessionDto;
     }
 }

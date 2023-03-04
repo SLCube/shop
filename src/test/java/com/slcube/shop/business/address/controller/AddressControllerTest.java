@@ -5,7 +5,7 @@ import com.slcube.shop.business.address.dto.AddressResponseDto;
 import com.slcube.shop.business.address.dto.AddressSaveRequestDto;
 import com.slcube.shop.business.address.dto.AddressUpdateRequestDto;
 import com.slcube.shop.business.address.service.AddressService;
-import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class AddressControllerTest {
         requestDto.setIsDefaultAddress(true);
         requestDto.setComment("test comment");
 
-        given(addressService.saveAddress(any(AddressSaveRequestDto.class), any(Member.class)))
+        given(addressService.saveAddress(any(AddressSaveRequestDto.class), any(MemberSessionDto.class)))
                 .willReturn(addressId);
 
 
@@ -68,7 +68,7 @@ class AddressControllerTest {
         responseDto.setZipcode("test zipcode");
         responseDto.setStreet("test street");
 
-        given(addressService.findAddress(anyLong(), any(Member.class)))
+        given(addressService.findAddress(anyLong(), any(MemberSessionDto.class)))
                 .willReturn(responseDto);
 
         mockMvc.perform(get("/api/address/1"))
@@ -93,7 +93,7 @@ class AddressControllerTest {
         requestDto.setZipcode("test update zipcode");
         requestDto.setComment("test update comment");
 
-        given(addressService.updateAddress(anyLong(), any(AddressUpdateRequestDto.class), any(Member.class)))
+        given(addressService.updateAddress(anyLong(), any(AddressUpdateRequestDto.class), any(MemberSessionDto.class)))
                 .willReturn(addressId);
 
         mockMvc.perform(patch("/api/address/" + addressId)
@@ -110,7 +110,7 @@ class AddressControllerTest {
     void deleteAddressTest() throws Exception {
         Long addressId = 1L;
 
-        given(addressService.deleteAddress(anyLong(), any(Member.class)))
+        given(addressService.deleteAddress(anyLong(), any(MemberSessionDto.class)))
                 .willReturn(addressId);
 
         mockMvc.perform(delete("/api/address/" + addressId)
