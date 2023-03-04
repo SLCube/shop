@@ -10,7 +10,7 @@ import com.slcube.shop.business.cart.repository.CartRepositoryHelper;
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.business.item.repository.ItemRepository;
 import com.slcube.shop.business.item.repository.ItemRepositoryHelper;
-import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +29,12 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public Long saveCart(CartSaveRequestDto requestDto, Member member) {
+    public Long saveCart(CartSaveRequestDto requestDto, MemberSessionDto sessionDto) {
         Long itemId = requestDto.getItemId();
         int quantity = requestDto.getQuantity();
 
         Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
-        Cart cart = Cart.createCartItem(item, quantity, member);
+        Cart cart = Cart.createCartItem(item, quantity, sessionDto.getMemberId());
 
         return cartRepository.save(cart).getId();
     }
@@ -46,8 +46,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Page<CartListResponseDto> findAllCarts(Member member, Pageable pageable) {
-        return cartRepository.findAllCarts(member, pageable)
+    public Page<CartListResponseDto> findAllCarts(MemberSessionDto sessionDto, Pageable pageable) {
+        return cartRepository.findAllCarts(sessionDto.getMemberId(), pageable)
                 .map(CartListResponseDto::new);
     }
 

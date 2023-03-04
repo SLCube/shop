@@ -5,7 +5,7 @@ import com.slcube.shop.business.cart.dto.CartListResponseDto;
 import com.slcube.shop.business.cart.dto.CartSaveRequestDto;
 import com.slcube.shop.business.cart.dto.CartUpdateRequestDto;
 import com.slcube.shop.business.cart.service.CartService;
-import com.slcube.shop.business.member.domain.Member;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.BDDMockito.*;
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CartController.class)
 @WithMockMember
@@ -50,7 +52,7 @@ class CartControllerTest {
         requestDto.setItemId(1L);
         requestDto.setQuantity(10);
 
-        given(cartService.saveCart(any(CartSaveRequestDto.class), any(Member.class)))
+        given(cartService.saveCart(any(CartSaveRequestDto.class), any(MemberSessionDto.class)))
                 .willReturn(cartId);
 
         mockMvc.perform(post("/api/carts")
@@ -76,7 +78,7 @@ class CartControllerTest {
 
         PageImpl<CartListResponseDto> result = new PageImpl<>(carts, pageable, carts.size());
 
-        given(cartService.findAllCarts(any(Member.class), any(Pageable.class)))
+        given(cartService.findAllCarts(any(MemberSessionDto.class), any(Pageable.class)))
                 .willReturn(result);
 
         MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
