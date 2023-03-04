@@ -1,6 +1,5 @@
 package com.slcube.shop.business.address.domain;
 
-import com.slcube.shop.business.member.domain.Member;
 import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,18 +33,16 @@ public class Address {
     @Convert(converter = BooleanToYnConverter.class)
     private Boolean isDefaultAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @Builder
-    private Address(String city, String zipcode, String street, String comment, boolean isDefaultAddress, Member member) {
+    private Address(String city, String zipcode, String street, String comment, boolean isDefaultAddress, Long memberId) {
         this.city = city;
         this.zipcode = zipcode;
         this.street = street;
         this.comment = comment;
         this.isDefaultAddress = isDefaultAddress;
-        this.member = member;
+        this.memberId = memberId;
     }
 
     public void updateAddress(String city, String zipcode, String street, String comment, boolean isDefaultAddress) {
