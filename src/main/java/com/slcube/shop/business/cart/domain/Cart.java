@@ -3,7 +3,6 @@ package com.slcube.shop.business.cart.domain;
 import com.slcube.shop.business.item.domain.Item;
 import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import com.slcube.shop.common.domain.BaseEntity;
-import com.slcube.shop.business.member.domain.Member;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -21,9 +20,7 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @Column(nullable = false)
     private int quantity;
@@ -36,14 +33,14 @@ public class Cart extends BaseEntity {
         this.quantity = 1;
     }
 
-    private Cart(Item item, int quantity, Member member) {
+    private Cart(Item item, int quantity, Long memberId) {
         this.item = item;
         this.quantity = quantity;
-        this.member = member;
+        this.memberId = memberId;
     }
 
-    public static Cart createCartItem(Item item, int quantity, Member member) {
-        Cart cart = new Cart(item, quantity, member);
+    public static Cart createCartItem(Item item, int quantity, Long memberId) {
+        Cart cart = new Cart(item, quantity, memberId);
         return cart;
     }
 
