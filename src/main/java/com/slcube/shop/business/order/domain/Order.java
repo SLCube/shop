@@ -1,6 +1,7 @@
 package com.slcube.shop.business.order.domain;
 
 import com.slcube.shop.business.delivery.domain.Delivery;
+import com.slcube.shop.common.exception.OrderAlreadyCancelException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,10 @@ public class Order {
     }
 
     public void cancelOrder() {
+        if (this.orderStatus == OrderStatus.CANCEL) {
+            throw new OrderAlreadyCancelException();
+        }
+
         this.orderStatus = OrderStatus.CANCEL;
     }
 }

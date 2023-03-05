@@ -9,6 +9,7 @@ import com.slcube.shop.business.order.domain.OrderStatus;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
 import com.slcube.shop.business.order.repository.OrderItemRepository;
 import com.slcube.shop.business.order.repository.OrderRepository;
+import com.slcube.shop.common.exception.OrderAlreadyCancelException;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @SpringBootTest
@@ -101,6 +103,21 @@ class OrderServiceTest {
                 () -> assertThat(order.isPresent()).isEqualTo(true),
                 () -> assertThat(order.get().getOrderStatus()).isEqualTo(OrderStatus.CANCEL)
         );
+    }
+
+    @Test
+    @DisplayName("이미 취소된 주문에 대한 주문 취소 테스트")
+    void orderAlreadyCancelTest() {
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+
+        createOrder(sessionDto);
+
+        Long orderId = 1L;
+
+        Long cancelOrderId = orderService.cancelOrder(orderId);
+
+        assertThrows(OrderAlreadyCancelException.class,
+                () -> orderService.cancelOrder(cancelOrderId));
     }
 
     private void createOrder(MemberSessionDto sessionDto) {

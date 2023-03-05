@@ -3,6 +3,7 @@ package com.slcube.shop.business.order.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
 import com.slcube.shop.business.order.service.OrderService;
+import com.slcube.shop.common.exception.OrderAlreadyCancelException;
 import com.slcube.shop.common.security.TestSecurityConfig;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.DisplayName;
@@ -67,6 +68,18 @@ class OrderControllerTest {
 
         mockMvc.perform(patch("/api/orders/" + orderId))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("이미 취소된 주문에 대한 주문 취소 테스트")
+    void orderAlreadyCancelTest() throws Exception {
+        Long orderId = 1L;
+        given(orderService.cancelOrder(orderId))
+                .willThrow(new OrderAlreadyCancelException());
+
+        mockMvc.perform(patch("/api/orders/" + orderId))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 }
