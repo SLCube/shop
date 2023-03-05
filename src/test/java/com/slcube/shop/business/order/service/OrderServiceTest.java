@@ -63,17 +63,7 @@ class OrderServiceTest {
     void orderTest() {
         MemberSessionDto sessionDto = new MemberSessionDto(member);
 
-        List<OrderCreateRequestDto> requestDtoList = new ArrayList<>();
-
-        for (long i = 1; i <= 3; i++) {
-            OrderCreateRequestDto requestDto = new OrderCreateRequestDto();
-            setField(requestDto, "itemId", i);
-            setField(requestDto, "quantity", (int) (2 * i));
-
-            requestDtoList.add(requestDto);
-        }
-
-        orderService.order(requestDtoList, sessionDto);
+        createOrder(sessionDto);
 
         Long orderId = 1L;
         Optional<Order> order = orderRepository.findById(orderId);
@@ -92,5 +82,38 @@ class OrderServiceTest {
             assertThat(orderItem.getItemId()).isEqualTo(i);
             assertThat(orderItem.getQuantity()).isEqualTo((int) i * 2);
         }
+    }
+
+    @Test
+    @DisplayName("주문 취소")
+    void cancelOrderTest() {
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+
+        createOrder(sessionDto);
+
+        Long orderId = 1L;
+
+        Long cancelOrderId = orderService.cancelOrder(orderId);
+
+        Optional<Order> order = orderRepository.findById(cancelOrderId);
+
+        assertAll(
+                () -> assertThat(order.isPresent()).isEqualTo(true),
+                () -> assertThat(order.get().getOrderStatus()).isEqualTo(OrderStatus.CANCEL)
+        );
+    }
+
+    private void createOrder(MemberSessionDto sessionDto) {
+        List<OrderCreateRequestDto> requestDtoList = new ArrayList<>();
+
+        for (long i = 1; i <= 3; i++) {
+            OrderCreateRequestDto requestDto = new OrderCreateRequestDto();
+            setField(requestDto, "itemId", i);
+            setField(requestDto, "quantity", (int) (2 * i));
+
+            requestDtoList.add(requestDto);
+        }
+
+        orderService.order(requestDtoList, sessionDto);
     }
 }

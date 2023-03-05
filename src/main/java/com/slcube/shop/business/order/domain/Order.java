@@ -38,4 +38,8 @@ public class Order {
     protected Order(Long memberId) {
         this.memberId = memberId;
     }
+
+    public void cancelOrder() {
+        this.orderStatus = OrderStatus.CANCEL;
+    }
 }
