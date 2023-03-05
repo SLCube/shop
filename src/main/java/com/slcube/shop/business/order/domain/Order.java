@@ -1,7 +1,6 @@
 package com.slcube.shop.business.order.domain;
 
 import com.slcube.shop.business.delivery.domain.Delivery;
-import com.slcube.shop.business.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +8,6 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -19,7 +16,7 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
 
@@ -33,13 +30,12 @@ public class Order {
     @Column(insertable = false)
     private LocalDateTime orderCancelDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    private List<OrderItem> orderItems = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "order")
     private Delivery delivery;
+
+    protected Order(Long memberId) {
+        this.memberId = memberId;
+    }
 }
