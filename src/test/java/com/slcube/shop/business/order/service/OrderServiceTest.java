@@ -11,17 +11,20 @@ import com.slcube.shop.business.order.repository.OrderItemRepository;
 import com.slcube.shop.business.order.repository.OrderRepository;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @SpringBootTest
 @Transactional
@@ -56,24 +59,38 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문 테스트")
     void orderTest() {
-        OrderCreateRequestDto requestDto = new OrderCreateRequestDto();
         MemberSessionDto sessionDto = new MemberSessionDto(member);
-        ReflectionTestUtils.setField(requestDto, "itemId", 1L);
-        ReflectionTestUtils.setField(requestDto, "quantity", 10);
 
-        Long orderItemId = orderService.order(requestDto, sessionDto);
+        List<OrderCreateRequestDto> requestDtoList = new ArrayList<>();
 
-        Optional<OrderItem> orderItem = orderItemRepository.findById(orderItemId);
+        for (long i = 1; i <= 3; i++) {
+            OrderCreateRequestDto requestDto = new OrderCreateRequestDto();
+            setField(requestDto, "itemId", i);
+            setField(requestDto, "quantity", (int) (2 * i));
+
+            requestDtoList.add(requestDto);
+        }
+
+        orderService.order(requestDtoList, sessionDto);
+
+        Long orderId = 1L;
+        Optional<Order> order = orderRepository.findById(orderId);
 
         assertAll(
-                () -> assertThat(orderItem.isPresent()).isEqualTo(true),
-                () -> assertThat(orderItem.get().getItemId()).isEqualTo(1L),
-                () -> assertThat(orderItem.get().getQuantity()).isEqualTo(10)
+                () -> assertThat(order.isPresent()).isEqualTo(true),
+                () -> assertThat(order.get().getMemberId()).isEqualTo(sessionDto.getMemberId()),
+                () -> assertThat(order.get().getOrderStatus()).isEqualTo(OrderStatus.ORDER)
         );
 
-        Order order = orderItem.get().getOrder();
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
 
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ORDER);
+        for (long i = 1; i <= 3; i++) {
+            OrderItem orderItem = orderItems.get((int) (i - 1));
+            assertThat(orderItem.getOrder()).isEqualTo(order.get());
+            assertThat(orderItem.getItemId()).isEqualTo(i);
+            assertThat(orderItem.getQuantity()).isEqualTo((int) i * 2);
+        }
     }
 }

@@ -1,11 +1,14 @@
 package com.slcube.shop.business.order.domain;
 
+import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,15 +34,20 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    protected void addOrder(Order order) {
+    private void addOrder(Order order) {
         this.order = order;
     }
 
-    public static OrderItem createOrderItem(Long itemId, int quantity, Long memberId) {
-        OrderItem orderItem = new OrderItem(itemId, quantity);
+    public static List<OrderItem> createOrderItem(Long memberId, List<OrderCreateRequestDto> requestDtoList) {
         Order order = new Order(memberId);
-        orderItem.addOrder(order);
 
-        return orderItem;
+        List<OrderItem> orderItems = requestDtoList.stream()
+                .map(requestDto -> {
+                    OrderItem orderItem = new OrderItem(requestDto.getItemId(), requestDto.getQuantity());
+                    orderItem.addOrder(order);
+                    return orderItem;
+                }).collect(Collectors.toList());
+
+        return orderItems;
     }
 }

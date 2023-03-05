@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -21,9 +23,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     @Transactional
-    public Long order(OrderCreateRequestDto requestDto, MemberSessionDto sessionDto) {
-        OrderItem orderItem = OrderItem.createOrderItem(requestDto.getItemId(), requestDto.getQuantity(), sessionDto.getMemberId());
-        return orderItemRepository.save(orderItem).getItemId();
+    public void order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto) {
+        List<OrderItem> orderItems = OrderItem.createOrderItem(sessionDto.getMemberId(), requestDtoList);
+        orderItemRepository.saveAll(orderItems);
     }
 
     @Override

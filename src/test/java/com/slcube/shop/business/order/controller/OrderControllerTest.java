@@ -1,7 +1,6 @@
 package com.slcube.shop.business.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
 import com.slcube.shop.business.order.service.OrderService;
 import com.slcube.shop.common.security.TestSecurityConfig;
@@ -15,8 +14,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,20 +39,18 @@ class OrderControllerTest {
     @Test
     @DisplayName("주문 테스트")
     void orderTest() throws Exception {
-        Long orderItemId = 1L;
-        given(orderService.order(any(OrderCreateRequestDto.class), any(MemberSessionDto.class)))
-                .willReturn(orderItemId);
 
+        List<OrderCreateRequestDto> requestDtoList = new ArrayList<>();
         OrderCreateRequestDto requestDto = new OrderCreateRequestDto();
         setField(requestDto, "itemId", 1L);
         setField(requestDto, "quantity", 10);
 
+        requestDtoList.add(requestDto);
 
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .content(objectMapper.writeValueAsString(requestDtoList)))
                 .andExpect(status().isCreated())
                 .andDo(print());
-
     }
 }

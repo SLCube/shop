@@ -6,10 +6,12 @@ import com.slcube.shop.business.order.dto.OrderListResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface OrderService {
 
-    Long order(OrderCreateRequestDto requestDto, MemberSessionDto sessionDto);
+    void order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto);
     Long cancelOrder(Long orderId);
     Page<OrderListResponseDto> getOrders();
 }
