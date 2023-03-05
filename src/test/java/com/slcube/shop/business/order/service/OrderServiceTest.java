@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 @SpringBootTest
 @Transactional
 @WithMockMember
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class OrderServiceTest {
 
     @Autowired
@@ -59,6 +61,7 @@ class OrderServiceTest {
 
         memberRepository.save(member);
     }
+
 
     @Test
     @DisplayName("주문 테스트")
