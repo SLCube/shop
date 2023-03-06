@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +80,8 @@ class OrderServiceTest {
                 () -> assertThat(order.get().getOrderStatus()).isEqualTo(OrderStatus.ORDER)
         );
 
-        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
+        List<OrderItem> orderItems = orderItemRepository.findByMemberId(sessionDto.getMemberId(), PageRequest.of(0, 10))
+                .getContent();
 
         for (long i = 1; i <= 3; i++) {
             OrderItem orderItem = orderItems.get((int) (i - 1));
