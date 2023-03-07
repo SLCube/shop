@@ -1,5 +1,7 @@
 package com.slcube.shop.business.order.service;
 
+import com.slcube.shop.business.item.domain.Item;
+import com.slcube.shop.business.item.repository.ItemRepository;
 import com.slcube.shop.business.member.domain.Member;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.member.repository.MemberRepository;
@@ -7,6 +9,8 @@ import com.slcube.shop.business.order.domain.Order;
 import com.slcube.shop.business.order.domain.OrderItem;
 import com.slcube.shop.business.order.domain.OrderStatus;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
+import com.slcube.shop.business.order.dto.OrderItemResponseDto;
+import com.slcube.shop.business.order.dto.OrderResponseDto;
 import com.slcube.shop.business.order.repository.OrderItemRepository;
 import com.slcube.shop.business.order.repository.OrderRepository;
 import com.slcube.shop.common.exception.OrderAlreadyCancelException;
@@ -16,7 +20,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,10 +54,18 @@ class OrderServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private ItemRepository itemRepository;
+
     private Member member;
 
     @BeforeEach
     void setUp() {
+        createMember();
+        createItem();
+    }
+
+    private void createMember() {
         MemberSessionDto sessionDto = (MemberSessionDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         member = Member.builder()
@@ -61,6 +75,17 @@ class OrderServiceTest {
                 .build();
 
         memberRepository.save(member);
+    }
+
+    private void createItem() {
+        for (int i = 1; i <= 3 ; i++) {
+            Item item = Item.builder()
+                    .price(10000 * i)
+                    .stockQuantity(10 * i)
+                    .itemName("test item name " + i)
+                    .build();
+            itemRepository.save(item);
+        }
     }
 
 
@@ -80,8 +105,7 @@ class OrderServiceTest {
                 () -> assertThat(order.get().getOrderStatus()).isEqualTo(OrderStatus.ORDER)
         );
 
-        List<OrderItem> orderItems = orderItemRepository.findByMemberId(sessionDto.getMemberId(), PageRequest.of(0, 10))
-                .getContent();
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
 
         for (long i = 1; i <= 3; i++) {
             OrderItem orderItem = orderItems.get((int) (i - 1));
@@ -123,6 +147,31 @@ class OrderServiceTest {
 
         assertThrows(OrderAlreadyCancelException.class,
                 () -> orderService.cancelOrder(cancelOrderId));
+    }
+
+    @Test
+    @DisplayName("주문 조회")
+    void findOrdersTest() {
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+        createOrder(sessionDto);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<OrderResponseDto> orders = orderService.findOrders(sessionDto, pageable);
+
+        List<OrderResponseDto> orderList = orders.getContent();
+        assertThat(orderList.size()).isEqualTo(1);
+
+        OrderResponseDto order = orderList.get(0);
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ORDER);
+
+        List<OrderItemResponseDto> orderItems = order.getOrderItems();
+        for (int i = 1; i <= 3 ; i++) {
+            OrderItemResponseDto orderItem = orderItems.get(i - 1);
+
+            assertThat(orderItem.getItemName()).isEqualTo("test item name " + i);
+            assertThat(orderItem.getItemPrice()).isEqualTo(10000 * i);
+            assertThat(orderItem.getQuantity()).isEqualTo(2 * i);
+        }
     }
 
     private void createOrder(MemberSessionDto sessionDto) {

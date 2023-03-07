@@ -2,8 +2,11 @@ package com.slcube.shop.business.order.controller;
 
 import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
+import com.slcube.shop.business.order.dto.OrderResponseDto;
 import com.slcube.shop.business.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,5 +32,11 @@ public class OrderController {
         orderService.cancelOrder(orderId);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<OrderResponseDto>> getOrders(@AuthenticationPrincipal MemberSessionDto sessionDto, Pageable pageable) {
+        Page<OrderResponseDto> orders = orderService.findOrders(sessionDto, pageable);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 }

@@ -1,7 +1,11 @@
 package com.slcube.shop.business.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slcube.shop.business.member.dto.MemberSessionDto;
+import com.slcube.shop.business.order.domain.OrderStatus;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
+import com.slcube.shop.business.order.dto.OrderItemResponseDto;
+import com.slcube.shop.business.order.dto.OrderResponseDto;
 import com.slcube.shop.business.order.service.OrderService;
 import com.slcube.shop.common.exception.OrderAlreadyCancelException;
 import com.slcube.shop.common.security.TestSecurityConfig;
@@ -12,18 +16,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)
@@ -81,5 +90,46 @@ class OrderControllerTest {
         mockMvc.perform(patch("/api/orders/" + orderId))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("주문 조회")
+    void findOrdersTest() throws Exception {
+        List<OrderResponseDto> orders = createOrders();
+        Pageable pageable = PageRequest.of(0, 10);
+
+        PageImpl<OrderResponseDto> result = new PageImpl<>(orders, pageable, orders.size());
+        given(orderService.findOrders(any(MemberSessionDto.class), any(Pageable.class)))
+                .willReturn(result);
+
+        mockMvc.perform(get("/api/orders"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(result)))
+                .andDo(print());
+    }
+
+    private List<OrderResponseDto> createOrders() {
+        List<OrderResponseDto> orders = new ArrayList<>();
+
+        OrderResponseDto order = new OrderResponseDto();
+        setField(order, "orderId", 1L);
+        setField(order, "orderStatus", OrderStatus.ORDER);
+        setField(order, "orderDate", LocalDateTime.now());
+
+        List<OrderItemResponseDto> orderItems = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            OrderItemResponseDto orderItem = new OrderItemResponseDto();
+            setField(orderItem, "orderItemId", (long) i);
+            setField(orderItem, "itemName", "test item name " + i);
+            setField(orderItem, "itemPrice", 10000 * i);
+            setField(orderItem, "quantity", 2 * i);
+            orderItems.add(orderItem);
+        }
+
+        setField(order, "orderItems", orderItems);
+
+        orders.add(order);
+
+        return orders;
     }
 }
