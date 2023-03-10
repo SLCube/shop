@@ -15,4 +15,6 @@ public interface OrderService {
     Long order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto);
     Long cancelOrder(Long orderId);
     Page<OrderResponseDto> findOrders(MemberSessionDto sessionDto, Pageable pageable);
+
+    OrderResponseDto findOrder(MemberSessionDto sessionDto, Long orderId);
 }

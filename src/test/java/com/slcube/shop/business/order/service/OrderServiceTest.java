@@ -114,7 +114,7 @@ class OrderServiceTest {
         }
 
         List<Item> items = itemRepository.findAll();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
 
             int remainedStockQuantity = 10 * (i + 1) - 2 * (i + 1);
@@ -140,7 +140,7 @@ class OrderServiceTest {
         );
 
         List<Item> items = itemRepository.findAll();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
 
             int remainedStockQuantity = 10 * (i + 1);
@@ -161,7 +161,7 @@ class OrderServiceTest {
                 () -> orderService.cancelOrder(cancelOrderId));
 
         List<Item> items = itemRepository.findAll();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
 
             int remainedStockQuantity = 10 * (i + 1);
@@ -170,7 +170,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 조회")
+    @DisplayName("주문 리스트 조회")
     void findOrdersTest() {
         MemberSessionDto sessionDto = new MemberSessionDto(member);
         createOrder(sessionDto);
@@ -185,12 +185,40 @@ class OrderServiceTest {
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ORDER);
 
         List<OrderItemResponseDto> orderItems = order.getOrderItems();
-        for (int i = 1; i <= 3 ; i++) {
+        for (int i = 1; i <= orderItems.size() ; i++) {
             OrderItemResponseDto orderItem = orderItems.get(i - 1);
 
             assertThat(orderItem.getItemName()).isEqualTo("test item name " + i);
             assertThat(orderItem.getItemPrice()).isEqualTo(10000 * i);
             assertThat(orderItem.getQuantity()).isEqualTo(2 * i);
+        }
+    }
+
+    @Test
+    @DisplayName("주문 단건 조회")
+    void findOrderTest() {
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+
+        Long orderId = createOrder(sessionDto);
+
+        OrderResponseDto order = orderService.findOrder(sessionDto, orderId);
+
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ORDER);
+
+        List<OrderItemResponseDto> orderItems = order.getOrderItems();
+
+        for (int i = 0; i < orderItems.size(); i++) {
+            OrderItemResponseDto orderItem = orderItems.get(i);
+
+            int quantity = 2 * (i + 1);
+            int itemPrice = 10000 * (i + 1);
+            String itemName = "test item name " + (i + 1);
+
+            assertAll(
+                    () -> assertThat(orderItem.getItemName()).isEqualTo(itemName),
+                    () -> assertThat(orderItem.getQuantity()).isEqualTo(quantity),
+                    () -> assertThat(orderItem.getItemPrice()).isEqualTo(itemPrice)
+            );
         }
     }
 

@@ -9,7 +9,7 @@ import com.slcube.shop.business.order.dto.OrderItemResponseDto;
 import com.slcube.shop.business.order.dto.OrderResponseDto;
 import com.slcube.shop.business.order.repository.OrderItemRepository;
 import com.slcube.shop.business.order.repository.OrderRepository;
-import com.slcube.shop.common.exception.OrderNotFoundException;
+import com.slcube.shop.business.order.repository.OrderRepositoryHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderRepositoryHelper orderRepositoryHelper;
     private final OrderItemRepository orderItemRepository;
     private final ItemRepositoryHelper itemRepositoryHelper;
 
@@ -47,8 +48,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Long cancelOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException());
+        Order order = orderRepositoryHelper.findById(orderId);
 
         order.cancelOrder();
 
@@ -71,5 +71,12 @@ public class OrderServiceImpl implements OrderService {
                 }).collect(Collectors.toList());
 
         return new PageImpl<>(result, pageable, result.size());
+    }
+
+    @Override
+    public OrderResponseDto findOrder(MemberSessionDto sessionDto, Long orderId) {
+        Order order = orderRepositoryHelper.findById(orderId);
+        List<OrderItemResponseDto> orderItems = orderItemRepository.findDtoByOrderId(orderId);
+        return new OrderResponseDto(order, orderItems);
     }
 }
