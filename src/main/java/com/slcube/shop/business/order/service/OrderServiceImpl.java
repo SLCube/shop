@@ -51,6 +51,13 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new OrderNotFoundException());
 
         order.cancelOrder();
+
+        orderItemRepository.findByOrderId(orderId).stream()
+                .forEach(orderItem -> {
+                    Item item = itemRepositoryHelper.findByNotDeleted(orderItem.getItemId());
+                    item.increaseStockQuantity(orderItem.getQuantity());
+                });
+
         return order.getId();
     }
 

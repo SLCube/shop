@@ -94,9 +94,8 @@ class OrderServiceTest {
     void orderTest() {
         MemberSessionDto sessionDto = new MemberSessionDto(member);
 
-        createOrder(sessionDto);
+        Long orderId = createOrder(sessionDto);
 
-        Long orderId = 1L;
         Optional<Order> order = orderRepository.findById(orderId);
 
         assertAll(
@@ -129,9 +128,7 @@ class OrderServiceTest {
     void cancelOrderTest() {
         MemberSessionDto sessionDto = new MemberSessionDto(member);
 
-        createOrder(sessionDto);
-
-        Long orderId = 1L;
+        Long orderId = createOrder(sessionDto);
 
         Long cancelOrderId = orderService.cancelOrder(orderId);
 
@@ -141,6 +138,14 @@ class OrderServiceTest {
                 () -> assertThat(order.isPresent()).isEqualTo(true),
                 () -> assertThat(order.get().getOrderStatus()).isEqualTo(OrderStatus.CANCEL)
         );
+
+        List<Item> items = itemRepository.findAll();
+        for (int i = 0; i < 3; i++) {
+            Item item = items.get(i);
+
+            int remainedStockQuantity = 10 * (i + 1);
+            assertThat(item.getStockQuantity()).isEqualTo(remainedStockQuantity);
+        }
     }
 
     @Test
@@ -148,14 +153,20 @@ class OrderServiceTest {
     void orderAlreadyCancelTest() {
         MemberSessionDto sessionDto = new MemberSessionDto(member);
 
-        createOrder(sessionDto);
-
-        Long orderId = 1L;
+        Long orderId = createOrder(sessionDto);
 
         Long cancelOrderId = orderService.cancelOrder(orderId);
 
         assertThrows(OrderAlreadyCancelException.class,
                 () -> orderService.cancelOrder(cancelOrderId));
+
+        List<Item> items = itemRepository.findAll();
+        for (int i = 0; i < 3; i++) {
+            Item item = items.get(i);
+
+            int remainedStockQuantity = 10 * (i + 1);
+            assertThat(item.getStockQuantity()).isEqualTo(remainedStockQuantity);
+        }
     }
 
     @Test
@@ -183,7 +194,7 @@ class OrderServiceTest {
         }
     }
 
-    private void createOrder(MemberSessionDto sessionDto) {
+    private Long createOrder(MemberSessionDto sessionDto) {
         List<OrderCreateRequestDto> requestDtoList = new ArrayList<>();
 
         for (long i = 1; i <= 3; i++) {
@@ -194,6 +205,6 @@ class OrderServiceTest {
             requestDtoList.add(requestDto);
         }
 
-        orderService.order(requestDtoList, sessionDto);
+        return orderService.order(requestDtoList, sessionDto);
     }
 }
