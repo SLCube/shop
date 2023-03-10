@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface OrderService {
 
-    void order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto);
+    Long order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto);
     Long cancelOrder(Long orderId);
     Page<OrderResponseDto> findOrders(MemberSessionDto sessionDto, Pageable pageable);
 }

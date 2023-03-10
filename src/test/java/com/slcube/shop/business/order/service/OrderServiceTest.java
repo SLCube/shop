@@ -113,6 +113,15 @@ class OrderServiceTest {
             assertThat(orderItem.getItemId()).isEqualTo(i);
             assertThat(orderItem.getQuantity()).isEqualTo((int) i * 2);
         }
+
+        List<Item> items = itemRepository.findAll();
+        for (int i = 0; i < 3; i++) {
+            Item item = items.get(i);
+
+            int remainedStockQuantity = 10 * (i + 1) - 2 * (i + 1);
+
+            assertThat(item.getStockQuantity()).isEqualTo(remainedStockQuantity);
+        }
     }
 
     @Test

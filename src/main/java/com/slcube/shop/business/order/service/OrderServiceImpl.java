@@ -1,8 +1,9 @@
 package com.slcube.shop.business.order.service;
 
+import com.slcube.shop.business.item.domain.Item;
+import com.slcube.shop.business.item.repository.ItemRepositoryHelper;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.order.domain.Order;
-import com.slcube.shop.business.order.domain.OrderItem;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
 import com.slcube.shop.business.order.dto.OrderItemResponseDto;
 import com.slcube.shop.business.order.dto.OrderResponseDto;
@@ -26,12 +27,21 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ItemRepositoryHelper itemRepositoryHelper;
 
     @Override
     @Transactional
-    public void order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto) {
-        List<OrderItem> orderItems = OrderItem.createOrderItem(sessionDto.getMemberId(), requestDtoList);
-        orderItemRepository.saveAll(orderItems);
+    public Long order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto) {
+        Order order = Order.createOrder(sessionDto.getMemberId(), requestDtoList);
+        Order savedOrder = orderRepository.save(order);
+
+        requestDtoList.stream()
+                .forEach(requestDto -> {
+                    Item item = itemRepositoryHelper.findByNotDeleted(requestDto.getItemId());
+                    item.decreaseStockQuantity(requestDto.getQuantity());
+                });
+
+        return savedOrder.getId();
     }
 
     @Override
