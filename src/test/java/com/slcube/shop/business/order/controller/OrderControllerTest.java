@@ -93,9 +93,10 @@ class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("주문 조회")
+    @DisplayName("주문 리스트 조회")
     void findOrdersTest() throws Exception {
-        List<OrderResponseDto> orders = createOrders();
+        List<OrderResponseDto> orders = new ArrayList<>();
+        orders.add(createOrder());
         Pageable pageable = PageRequest.of(0, 10);
 
         PageImpl<OrderResponseDto> result = new PageImpl<>(orders, pageable, orders.size());
@@ -108,9 +109,23 @@ class OrderControllerTest {
                 .andDo(print());
     }
 
-    private List<OrderResponseDto> createOrders() {
-        List<OrderResponseDto> orders = new ArrayList<>();
+    @Test
+    @DisplayName("주문 단건 조회")
+    void findOrderTest() throws Exception {
+        Long orderId = 1L;
+        OrderResponseDto order = createOrder();
 
+        given(orderService.findOrder(any(MemberSessionDto.class), anyLong()))
+                .willReturn(order);
+
+        mockMvc.perform(get("/api/orders/" + orderId))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(order)))
+                .andDo(print());
+
+    }
+
+    private OrderResponseDto createOrder() {
         OrderResponseDto order = new OrderResponseDto();
         setField(order, "orderId", 1L);
         setField(order, "orderStatus", OrderStatus.ORDER);
@@ -128,8 +143,6 @@ class OrderControllerTest {
 
         setField(order, "orderItems", orderItems);
 
-        orders.add(order);
-
-        return orders;
+        return order;
     }
 }

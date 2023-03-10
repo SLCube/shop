@@ -35,8 +35,14 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<OrderResponseDto>> getOrders(@AuthenticationPrincipal MemberSessionDto sessionDto, Pageable pageable) {
+    public ResponseEntity<Page<OrderResponseDto>> findOrders(@AuthenticationPrincipal MemberSessionDto sessionDto, Pageable pageable) {
         Page<OrderResponseDto> orders = orderService.findOrders(sessionDto, pageable);
         return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDto> findOrder(@AuthenticationPrincipal MemberSessionDto sessionDto, @PathVariable Long orderId) {
+        OrderResponseDto order = orderService.findOrder(sessionDto, orderId);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 }
