@@ -2,8 +2,8 @@ package com.slcube.shop.business.item.domain;
 
 import com.slcube.shop.business.category.domain.Category;
 import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
-import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
+import com.slcube.shop.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,5 +58,15 @@ public class Item extends BaseEntity {
 
     public void deleteItem() {
         this.isDeleted = Boolean.TRUE;
+    }
+
+    public int increaseStockQuantity(int stockQuantity) {
+        this.stockQuantity += stockQuantity;
+        return stockQuantity;
+    }
+
+    public int decreaseStockQuantity(int stockQuantity) {
+        this.stockQuantity -= stockQuantity;
+        return stockQuantity;
     }
 }
