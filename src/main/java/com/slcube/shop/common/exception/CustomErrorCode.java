@@ -12,6 +12,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum CustomErrorCode {
 
     ADDRESS_NOT_REGISTER_ANYMORE(BAD_REQUEST, "배송지를 더이상 등록할 수 없습니다."),
+    ORDER_ALREADY_CANCEL(BAD_REQUEST, "이미 취소된 주문입니다."),
 
     INVALID_EMAIL_OR_PASSWORD(UNAUTHORIZED, "아이디 혹은 비밀번호를 확인해주세요."),
     SESSION_EXPIRED(UNAUTHORIZED, "세션이 만료되었습니다."),
@@ -24,6 +25,7 @@ public enum CustomErrorCode {
     CATEGORIES_NOT_FOUND(NOT_FOUND, "카테고리 정보를 찾을 수 없습니다."),
     ADDRESS_NOT_FOUND(NOT_FOUND, "배송지 정보를 찾을 수 없습니다."),
     ITEMS_NOT_FOUND(NOT_FOUND, "상품 정보를 찾을 수 없습니다."),
+    ORDER_NOT_FOUND(NOT_FOUND, "주문 정보를 찾을 수 없습니다."),
     MEMBER_NOT_FOUND(NOT_FOUND, "계정 정보를 찾을 수 없습니다."),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러입니다.");

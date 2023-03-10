@@ -24,7 +24,6 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final CartRepositoryHelper cartRepositoryHelper;
-    private final ItemRepository itemRepository;
     private final ItemRepositoryHelper itemRepositoryHelper;
 
     @Override
@@ -33,7 +32,7 @@ public class CartServiceImpl implements CartService {
         Long itemId = requestDto.getItemId();
         int quantity = requestDto.getQuantity();
 
-        Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
+        Item item = itemRepositoryHelper.findByNotDeleted(itemId);
         Cart cart = Cart.createCartItem(item, quantity, sessionDto.getMemberId());
 
         return cartRepository.save(cart).getId();
