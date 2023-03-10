@@ -45,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
     public Long updateItem(Long itemId, ItemUpdateRequestDto requestDto) {
         Long categoryId = requestDto.getCategoryId();
 
-        Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
+        Item item = itemRepositoryHelper.findByNotDeleted(itemId);
         Category category = categoryRepositoryHelper.findById(categoryRepository, categoryId);
 
         item.updateItem(requestDto, category);
@@ -55,7 +55,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Long deleteItem(Long itemId) {
-        Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
+        Item item = itemRepositoryHelper.findByNotDeleted(itemId);
 
         item.deleteItem();
 
@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemResponseDto findItem(Long itemId) {
-        Item item = itemRepositoryHelper.findByNotDeleted(itemRepository, itemId);
+        Item item = itemRepositoryHelper.findByNotDeleted(itemId);
 
         return new ItemResponseDto(item);
     }
