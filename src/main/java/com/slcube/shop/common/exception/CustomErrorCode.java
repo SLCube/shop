@@ -13,6 +13,7 @@ public enum CustomErrorCode {
 
     ADDRESS_NOT_REGISTER_ANYMORE(BAD_REQUEST, "배송지를 더이상 등록할 수 없습니다."),
     ORDER_ALREADY_CANCEL(BAD_REQUEST, "이미 취소된 주문입니다."),
+    NOT_ENOUGH_STOCK_QUANTITY(BAD_REQUEST, "상품 재고가 충분하지 않습니다."),
 
     INVALID_EMAIL_OR_PASSWORD(UNAUTHORIZED, "아이디 혹은 비밀번호를 확인해주세요."),
     SESSION_EXPIRED(UNAUTHORIZED, "세션이 만료되었습니다."),

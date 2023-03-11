@@ -4,6 +4,7 @@ import com.slcube.shop.business.category.domain.Category;
 import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
 import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
 import com.slcube.shop.common.domain.BaseEntity;
+import com.slcube.shop.common.exception.NotEnoughStockQuantity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -66,6 +67,9 @@ public class Item extends BaseEntity {
     }
 
     public int decreaseStockQuantity(int stockQuantity) {
+        if (this.stockQuantity < stockQuantity) {
+            throw new NotEnoughStockQuantity();
+        }
         this.stockQuantity -= stockQuantity;
         return stockQuantity;
     }

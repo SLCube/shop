@@ -34,14 +34,13 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Long order(List<OrderCreateRequestDto> requestDtoList, MemberSessionDto sessionDto) {
         Order order = Order.createOrder(sessionDto.getMemberId(), requestDtoList);
-        Order savedOrder = orderRepository.save(order);
 
-        requestDtoList.stream()
-                .forEach(requestDto -> {
+        requestDtoList.forEach(requestDto -> {
                     Item item = itemRepositoryHelper.findByNotDeleted(requestDto.getItemId());
                     item.decreaseStockQuantity(requestDto.getQuantity());
                 });
 
+        Order savedOrder = orderRepository.save(order);
         return savedOrder.getId();
     }
 
@@ -52,8 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.cancelOrder();
 
-        orderItemRepository.findByOrderId(orderId).stream()
-                .forEach(orderItem -> {
+        orderItemRepository.findByOrderId(orderId).forEach(orderItem -> {
                     Item item = itemRepositoryHelper.findByNotDeleted(orderItem.getItemId());
                     item.increaseStockQuantity(orderItem.getQuantity());
                 });

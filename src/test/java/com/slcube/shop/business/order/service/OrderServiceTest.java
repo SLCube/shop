@@ -13,6 +13,7 @@ import com.slcube.shop.business.order.dto.OrderItemResponseDto;
 import com.slcube.shop.business.order.dto.OrderResponseDto;
 import com.slcube.shop.business.order.repository.OrderItemRepository;
 import com.slcube.shop.business.order.repository.OrderRepository;
+import com.slcube.shop.common.exception.NotEnoughStockQuantity;
 import com.slcube.shop.common.exception.OrderAlreadyCancelException;
 import com.slcube.shop.common.security.WithMockMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,6 +147,31 @@ class OrderServiceTest {
             int remainedStockQuantity = 10 * (i + 1);
             assertThat(item.getStockQuantity()).isEqualTo(remainedStockQuantity);
         }
+    }
+
+    @Test
+    @DisplayName("재고가 충분하지 않은 상품 주문 처리")
+    void notEnoughStockQuantityOrderTest() {
+        Item item = Item.builder()
+                .itemName("test not enough stock quantity item")
+                .stockQuantity(0)
+                .price(10000)
+                .build();
+
+        Long itemId = itemRepository.save(item).getId();
+
+        MemberSessionDto sessionDto = new MemberSessionDto(member);
+
+        List<OrderCreateRequestDto> requestDtoList = new ArrayList<>();
+
+        OrderCreateRequestDto requestDto = new OrderCreateRequestDto();
+        setField(requestDto, "itemId", itemId);
+        setField(requestDto, "quantity", 10);
+
+        requestDtoList.add(requestDto);
+
+        assertThrows(NotEnoughStockQuantity.class,
+                () ->orderService.order(requestDtoList, sessionDto));
     }
 
     @Test
