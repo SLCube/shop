@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ItemRepository extends JpaRepository<Item, Long>, ItemQueryRepository {
 
@@ -14,5 +15,5 @@ public interface ItemRepository extends JpaRepository<Item, Long>, ItemQueryRepo
     Optional<Item> findByNotDeleted(@Param("id") Long itemId);
 
     @Query("select i from Item i where i.isDeleted = false and i.id in :itemIds")
-    List<Item> findByIdIn(@Param("itemIds") List<Long> itemIds);
+    List<Item> findByIdIn(@Param("itemIds") Set<Long> itemIds);
 }

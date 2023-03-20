@@ -19,8 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,9 +42,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.createOrder(sessionDto.getMemberId(), requestDtoList);
 
         requestDtoList.forEach(requestDto -> {
-                    Item item = itemRepositoryHelper.findByNotDeleted(requestDto.getItemId());
-                    item.decreaseStockQuantity(requestDto.getQuantity());
-                });
+            Item item = itemRepositoryHelper.findByNotDeleted(requestDto.getItemId());
+            item.decreaseStockQuantity(requestDto.getQuantity());
+        });
 
         Order savedOrder = orderRepository.save(order);
         return savedOrder.getId();
@@ -56,9 +58,9 @@ public class OrderServiceImpl implements OrderService {
         order.cancelOrder();
 
         orderItemRepository.findByOrderId(orderId).forEach(orderItem -> {
-                    Item item = itemRepositoryHelper.findByNotDeleted(orderItem.getItemId());
-                    item.increaseStockQuantity(orderItem.getQuantity());
-                });
+            Item item = itemRepositoryHelper.findByNotDeleted(orderItem.getItemId());
+            item.increaseStockQuantity(orderItem.getQuantity());
+        });
 
         return order.getId();
     }
@@ -66,11 +68,23 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<OrderResponseDto> findOrders(MemberSessionDto sessionDto, Pageable pageable) {
         Page<Order> orders = orderRepository.findByMemberId(sessionDto.getMemberId(), pageable);
-        List<OrderResponseDto> result = orders.stream()
-                .map(order -> {
-                    List<OrderItemResponseDto> orderItems = orderItemRepository.findDtoByOrderId(order.getId());
-                    return new OrderResponseDto(order, orderItems);
-                }).collect(Collectors.toList());
+
+        Set<Long> itemIds = new HashSet<>();
+
+        for (Order order : orders) {
+            order.getOrderItems().forEach(orderItem -> itemIds.add(orderItem.getItemId()));
+        }
+
+        Map<Long, Item> itemMap = itemRepository.findByIdIn(itemIds)
+                .stream().collect(Collectors.toMap(Item::getId, item -> item));
+
+        List<OrderResponseDto> result = orders.map(order -> {
+            List<OrderItemResponseDto> orderItems = order.getOrderItems().stream().map(orderItem -> {
+                Item item = itemMap.get(orderItem.getItemId());
+                return new OrderItemResponseDto(orderItem, item);
+            }).toList();
+            return new OrderResponseDto(order, orderItems);
+        }).toList();
 
         return new PageImpl<>(result, pageable, result.size());
     }
@@ -79,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseDto findOrder(MemberSessionDto sessionDto, Long orderId) {
         Order order = orderRepositoryHelper.findById(orderId);
 
-        List<Long> itemIds = order.getOrderItems().stream().map(OrderItem::getItemId).toList();
+        Set<Long> itemIds = order.getOrderItems().stream().map(OrderItem::getItemId).collect(Collectors.toSet());
         Map<Long, Item> itemMap = itemRepository.findByIdIn(itemIds)
                 .stream().collect(Collectors.toMap(Item::getId, item -> item));
 
@@ -87,6 +101,7 @@ public class OrderServiceImpl implements OrderService {
             Item item = itemMap.get(orderItem.getItemId());
             return new OrderItemResponseDto(orderItem, item);
         }).toList();
+
         return new OrderResponseDto(order, orderItems);
     }
 }
