@@ -83,7 +83,6 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, Item> itemMap = itemRepository.findByIdIn(itemIds)
                 .stream().collect(Collectors.toMap(Item::getId, item -> item));
 
-
         List<OrderItemResponseDto> orderItems = order.getOrderItems().stream().map(orderItem -> {
             Item item = itemMap.get(orderItem.getItemId());
             return new OrderItemResponseDto(orderItem, item);
