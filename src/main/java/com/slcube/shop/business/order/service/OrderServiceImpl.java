@@ -1,9 +1,11 @@
 package com.slcube.shop.business.order.service;
 
 import com.slcube.shop.business.item.domain.Item;
+import com.slcube.shop.business.item.repository.ItemRepository;
 import com.slcube.shop.business.item.repository.ItemRepositoryHelper;
 import com.slcube.shop.business.member.dto.MemberSessionDto;
 import com.slcube.shop.business.order.domain.Order;
+import com.slcube.shop.business.order.domain.OrderItem;
 import com.slcube.shop.business.order.dto.OrderCreateRequestDto;
 import com.slcube.shop.business.order.dto.OrderItemResponseDto;
 import com.slcube.shop.business.order.dto.OrderResponseDto;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderRepositoryHelper orderRepositoryHelper;
     private final OrderItemRepository orderItemRepository;
+    private final ItemRepository itemRepository;
     private final ItemRepositoryHelper itemRepositoryHelper;
 
     @Override
@@ -74,7 +78,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseDto findOrder(MemberSessionDto sessionDto, Long orderId) {
         Order order = orderRepositoryHelper.findById(orderId);
-        List<OrderItemResponseDto> orderItems = orderItemRepository.findDtoByOrderId(orderId);
+
+        List<Long> itemIds = order.getOrderItems().stream().map(OrderItem::getItemId).toList();
+        Map<Long, Item> itemMap = itemRepository.findByIdIn(itemIds)
+                .stream().collect(Collectors.toMap(Item::getId, item -> item));
+
+
+        List<OrderItemResponseDto> orderItems = order.getOrderItems().stream().map(orderItem -> {
+            Item item = itemMap.get(orderItem.getItemId());
+            return new OrderItemResponseDto(orderItem, item);
+        }).toList();
         return new OrderResponseDto(order, orderItems);
     }
 }
