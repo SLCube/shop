@@ -12,6 +12,7 @@ import com.slcube.shop.business.order.dto.OrderResponseDto;
 import com.slcube.shop.business.order.repository.OrderItemRepository;
 import com.slcube.shop.business.order.repository.OrderRepository;
 import com.slcube.shop.business.order.repository.OrderRepositoryHelper;
+import com.slcube.shop.common.exception.ItemValidationNotCorrectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,11 +44,19 @@ public class OrderServiceImpl implements OrderService {
 
         requestDtoList.forEach(requestDto -> {
             Item item = itemRepositoryHelper.findByNotDeleted(requestDto.getItemId());
+            itemValidation(item, requestDto);
             item.decreaseStockQuantity(requestDto.getQuantity());
         });
 
         Order savedOrder = orderRepository.save(order);
         return savedOrder.getId();
+    }
+
+    private void itemValidation(Item item, OrderCreateRequestDto requestDto) {
+        if (!item.getItemName().equals(requestDto.getItemName())
+                || item.getPrice() != requestDto.getPrice()) {
+            throw new ItemValidationNotCorrectException();
+        }
     }
 
     @Override
