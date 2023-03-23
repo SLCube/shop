@@ -2,8 +2,9 @@ package com.slcube.shop.business.item.domain;
 
 import com.slcube.shop.business.category.domain.Category;
 import com.slcube.shop.business.item.dto.ItemUpdateRequestDto;
-import com.slcube.shop.common.domain.BaseEntity;
 import com.slcube.shop.common.config.jpa.BooleanToYnConverter;
+import com.slcube.shop.common.domain.BaseEntity;
+import com.slcube.shop.common.exception.NotEnoughStockQuantity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import javax.persistence.*;
 public class Item extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
     private Long id;
 
@@ -58,5 +59,18 @@ public class Item extends BaseEntity {
 
     public void deleteItem() {
         this.isDeleted = Boolean.TRUE;
+    }
+
+    public int increaseStockQuantity(int stockQuantity) {
+        this.stockQuantity += stockQuantity;
+        return stockQuantity;
+    }
+
+    public int decreaseStockQuantity(int stockQuantity) {
+        if (this.stockQuantity < stockQuantity) {
+            throw new NotEnoughStockQuantity();
+        }
+        this.stockQuantity -= stockQuantity;
+        return stockQuantity;
     }
 }
