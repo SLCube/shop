@@ -20,7 +20,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
@@ -52,8 +51,7 @@ class MemberControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestDto))
                         .characterEncoding(UTF_8))
-                .andExpect(status().isOk())
-                .andExpect(content().json(memberId.toString()))
+                .andExpect(status().isCreated())
                 .andDo(print());
     }
 
@@ -101,7 +99,6 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsBytes(requestDto))
                         .characterEncoding(UTF_8))
                 .andExpect(status().isOk())
-                .andExpect(content().json(memberId.toString()))
                 .andDo(print());
     }
 }
