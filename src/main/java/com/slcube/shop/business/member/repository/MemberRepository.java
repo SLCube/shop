@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m where m.email = :email and m.memberStatus = :memberStatus")
-    public Member findByEmailAndMemberStatus(@Param("email") String email, @Param("memberStatus") MemberStatus memberStatus);
+    Member findByEmailAndMemberStatus(@Param("email") String email, @Param("memberStatus") MemberStatus memberStatus);
 }

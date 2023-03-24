@@ -10,4 +10,6 @@ public interface MemberService {
     Long signUp(MemberSignUpRequestDto requestDto);
 
     Long changePassword(MemberChangePasswordRequestDto requestDto);
+
+    void emailDuplicatedCheck(String signUpId);
 }

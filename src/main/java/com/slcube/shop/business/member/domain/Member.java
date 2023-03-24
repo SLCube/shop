@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Member extends BaseTimeEntity implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 

@@ -5,6 +5,7 @@ import com.slcube.shop.business.member.domain.MemberStatus;
 import com.slcube.shop.business.member.dto.*;
 import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.member.repository.MemberRepositoryHelper;
+import com.slcube.shop.common.exception.DuplicatedEmailException;
 import com.slcube.shop.common.exception.MemberNotFoundException;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepositoryHelper.findByEmailAndMemberStatus(memberRepository, email, MemberStatus.MEMBER);
+        Member member = memberRepositoryHelper.findByEmailAndMemberStatus(email, MemberStatus.MEMBER);
 
         if (member == null) {
             throw new UsernameNotFoundException(new MemberNotFoundException().getMessage());
@@ -51,16 +52,22 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         roles.add(new SimpleGrantedAuthority(member.getMemberStatus().name()));
 
-        MemberContext memberContext = new MemberContext(member, roles);
+        return new MemberContext(member, roles);
+    }
 
-        return memberContext;
+    @Override
+    public void emailDuplicatedCheck(String signUpEmail) {
+        Member member = memberRepositoryHelper.findByEmailAndMemberStatus(signUpEmail, MemberStatus.MEMBER);
+        if (member != null) {
+            throw new DuplicatedEmailException();
+        }
     }
 
     @Override
     @Transactional
     public Long changePassword(MemberChangePasswordRequestDto requestDto) {
         String email = requestDto.getEmail();
-        Member member = memberRepositoryHelper.findByEmailAndMemberStatus(memberRepository, email, MemberStatus.MEMBER);
+        Member member = memberRepositoryHelper.findByEmailAndMemberStatus(email, MemberStatus.MEMBER);
 
         String changedPassword = requestDto.getChangedPassword();
         member.changePassword(passwordEncoder.encode(changedPassword));
