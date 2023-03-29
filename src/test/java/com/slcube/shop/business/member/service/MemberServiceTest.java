@@ -58,6 +58,15 @@ class MemberServiceTest {
     }
 
     @Test
+    void 중복된_이메일로_회원가입_시도() {
+        MemberSignUpRequestDto requestDto = createMember();
+        memberService.signUp(requestDto);
+
+        assertThrows(DuplicatedEmailException.class,
+                () -> memberService.signUp(requestDto), "이미 등록된 이메일입니다.");
+    }
+
+    @Test
     @DisplayName("이메일 중복체크")
     void emailDuplicatedCheckTest() {
         // given
