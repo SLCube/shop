@@ -5,6 +5,7 @@ import com.slcube.shop.business.member.dto.MemberChangePasswordRequestDto;
 import com.slcube.shop.business.member.dto.MemberLoginDto;
 import com.slcube.shop.business.member.dto.MemberSignUpRequestDto;
 import com.slcube.shop.common.exception.DuplicatedEmailException;
+import com.slcube.shop.common.exception.PasswordAlreadyInUseException;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,7 +87,7 @@ class MemberServiceTest {
 
         // given
         MemberSignUpRequestDto requestDto = createMember();
-        Long memberId = memberService.signUp(requestDto);
+        memberService.signUp(requestDto);
 
         MemberChangePasswordRequestDto changePasswordRequestDto = new MemberChangePasswordRequestDto();
         setField(changePasswordRequestDto, "email", "test@naver.com");
@@ -105,6 +106,20 @@ class MemberServiceTest {
         Member member = memberContext.getMember();
 
         assertThat(passwordEncoder.matches("test change password", member.getPassword())).isTrue();
+    }
+
+    @Test
+    void 이미_사용중인_비밀번호로_비밀번호_변경_시도() {
+        MemberSignUpRequestDto requestDto = createMember();
+        memberService.signUp(requestDto);
+
+        MemberChangePasswordRequestDto changePasswordRequestDto = new MemberChangePasswordRequestDto();
+        setField(changePasswordRequestDto, "email", "test@naver.com");
+        setField(changePasswordRequestDto, "currentPassword", "test password");
+        setField(changePasswordRequestDto, "changedPassword", "test password");
+
+        assertThrows(PasswordAlreadyInUseException.class,
+                () -> memberService.changePassword(changePasswordRequestDto), "이미 사용중인 비밀번호입니다.");
     }
 
     private static MemberSignUpRequestDto createMember() {

@@ -24,6 +24,7 @@ public enum CustomErrorCode {
     MEMBER_NOT_FOUND(BAD_REQUEST, "계정 정보를 찾을 수 없습니다."),
     ITEM_VALIDATION_NOT_CORRECT(BAD_REQUEST, "상품 정보가 유효하지 않습니다."),
     DUPLICATED_EMAIL(BAD_REQUEST, "이미 등록된 이메일입니다."),
+    PASSWORD_ALREADY_IN_USE(BAD_REQUEST, "이미 사용중인 비밀번호입니다."),
 
     INVALID_EMAIL_OR_PASSWORD(UNAUTHORIZED, "아이디 혹은 비밀번호를 확인해주세요."),
     SESSION_EXPIRED(UNAUTHORIZED, "세션이 만료되었습니다."),

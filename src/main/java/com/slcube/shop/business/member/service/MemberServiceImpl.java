@@ -7,6 +7,7 @@ import com.slcube.shop.business.member.repository.MemberRepository;
 import com.slcube.shop.business.member.repository.MemberRepositoryHelper;
 import com.slcube.shop.common.exception.DuplicatedEmailException;
 import com.slcube.shop.common.exception.MemberNotFoundException;
+import com.slcube.shop.common.exception.PasswordAlreadyInUseException;
 import com.slcube.shop.common.security.authenticationContext.MemberContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -69,6 +70,11 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         Member member = memberRepositoryHelper.findByEmailAndMemberStatus(email, MemberStatus.MEMBER);
 
         String changedPassword = requestDto.getChangedPassword();
+
+        if (passwordEncoder.matches(requestDto.getChangedPassword(), member.getPassword())) {
+            throw new PasswordAlreadyInUseException();
+        }
+
         member.changePassword(passwordEncoder.encode(changedPassword));
 
         return member.getId();
