@@ -33,10 +33,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     @Override
     @Transactional
     public Long signUp(MemberSignUpRequestDto requestDto) {
-        String password = requestDto.getPassword();
-        requestDto.setPassword(passwordEncoder.encode(password));
-
-        Member member = MemberMapper.toEntity(requestDto);
+        Member member = MemberMapper.toEntity(requestDto, passwordEncoder);
         return memberRepository.save(member).getId();
     }
 

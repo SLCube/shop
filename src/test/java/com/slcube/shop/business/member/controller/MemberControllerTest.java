@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,9 +39,9 @@ class MemberControllerTest {
     @DisplayName("회원가입")
     void signUpTest() throws Exception {
         MemberSignUpRequestDto requestDto = new MemberSignUpRequestDto();
-        requestDto.setUsername("test username");
-        requestDto.setEmail("test@naver.com");
-        requestDto.setPassword("test password");
+        setField(requestDto, "username", "test username");
+        setField(requestDto, "email", "test@naver.com");
+        setField(requestDto, "password", "test password");
 
         Long memberId = 1L;
         given(memberService.signUp(any(MemberSignUpRequestDto.class)))
@@ -85,9 +86,9 @@ class MemberControllerTest {
     @DisplayName("비밀번호 변경")
     void changePasswordTest() throws Exception {
         MemberChangePasswordRequestDto requestDto = new MemberChangePasswordRequestDto();
-        requestDto.setEmail("test@naver.com");
-        requestDto.setCurrentPassword("test password");
-        requestDto.setChangedPassword("test change password");
+        setField(requestDto, "email", "test@naver.com");
+        setField(requestDto, "currentPassword", "test password");
+        setField(requestDto, "changedPassword", "test change password");
 
         Long memberId = 1L;
         given(memberService.changePassword(any(MemberChangePasswordRequestDto.class)))

@@ -14,8 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @SpringBootTest
 @Transactional
@@ -42,8 +44,8 @@ class MemberServiceTest {
 
         // then
         MemberLoginDto loginDto = new MemberLoginDto();
-        loginDto.setEmail("test@naver.com");
-        loginDto.setPassword("test password");
+        setField(loginDto, "email", "test@naver.com");
+        setField(loginDto, "password", "test password");
 
         MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(loginDto.getEmail());
         Member member = memberContext.getMember();
@@ -78,17 +80,17 @@ class MemberServiceTest {
         Long memberId = memberService.signUp(requestDto);
 
         MemberChangePasswordRequestDto changePasswordRequestDto = new MemberChangePasswordRequestDto();
-        changePasswordRequestDto.setEmail("test@naver.com");
-        changePasswordRequestDto.setCurrentPassword("test password");
-        changePasswordRequestDto.setChangedPassword("test change password");
+        setField(changePasswordRequestDto, "email", "test@naver.com");
+        setField(changePasswordRequestDto, "currentPassword", "test password");
+        setField(changePasswordRequestDto, "changedPassword", "test change password");
 
         // when
         memberService.changePassword(changePasswordRequestDto);
 
         // then
         MemberLoginDto loginDto = new MemberLoginDto();
-        loginDto.setEmail("test@naver.com");
-        loginDto.setPassword("test change password");
+        setField(loginDto, "email", "test@naver.com");
+        setField(loginDto, "password", "test change password");
 
         MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(loginDto.getEmail());
         Member member = memberContext.getMember();
@@ -98,9 +100,9 @@ class MemberServiceTest {
 
     private static MemberSignUpRequestDto createMember() {
         MemberSignUpRequestDto requestDto = new MemberSignUpRequestDto();
-        requestDto.setEmail("test@naver.com");
-        requestDto.setUsername("test user name");
-        requestDto.setPassword("test password");
+        setField(requestDto, "email", "test@naver.com");
+        setField(requestDto, "username", "test user name");
+        setField(requestDto, "password", "test password");
         return requestDto;
     }
 }
